@@ -14,6 +14,11 @@ class Position extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
+    protected $fillable = [
+        'title',
+        'description'
+    ];
+
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
