@@ -41,9 +41,9 @@ class PositionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->label('ID')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('index')
+                    ->label('No')
+                    ->rowIndex(),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('description')
