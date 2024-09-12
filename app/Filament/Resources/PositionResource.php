@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Filament\Clusters\Master\Resources;
+namespace App\Filament\Resources;
 
-use App\Filament\Clusters\Master;
-use App\Filament\Clusters\Master\Resources\PositionResource\Pages;
-use App\Filament\Clusters\Master\Resources\PositionResource\RelationManagers;
+use App\Filament\Resources\PositionResource\Pages;
+use App\Filament\Resources\PositionResource\RelationManagers;
 use App\Models\Position;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -20,9 +19,11 @@ class PositionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
+    protected static ?int $navigationSort = 1;
+
     protected static ?string $pluralLabel = 'Jabatan';
 
-    protected static ?string $cluster = Master::class;
+    protected static ?string $navigationGroup = 'Master';
 
     public static function form(Form $form): Form
     {

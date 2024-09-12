@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Filament\Clusters\Master\Resources;
+namespace App\Filament\Resources;
 
-use App\Filament\Clusters\Master;
-use App\Filament\Clusters\Master\Resources\UserResource\Pages;
-use App\Filament\Clusters\Master\Resources\UserResource\RelationManagers;
+use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -20,9 +19,11 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user';
 
+    protected static ?int $navigationSort = 0;
+
     protected static ?string $pluralLabel = 'Pegawai';
 
-    protected static ?string $cluster = Master::class;
+    protected static ?string $navigationGroup = 'Master';
 
     public static function form(Form $form): Form
     {

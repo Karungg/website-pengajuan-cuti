@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Filament\Clusters\Master\Resources;
+namespace App\Filament\Resources;
 
-use App\Filament\Clusters\Master;
-use App\Filament\Clusters\Master\Resources\DivisionResource\Pages;
-use App\Filament\Clusters\Master\Resources\DivisionResource\RelationManagers;
+use App\Filament\Resources\DivisionResource\Pages;
+use App\Filament\Resources\DivisionResource\RelationManagers;
 use App\Models\Division;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -20,9 +19,11 @@ class DivisionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
+    protected static ?int $navigationSort = 2;
+
     protected static ?string $pluralLabel = 'Divisi';
 
-    protected static ?string $cluster = Master::class;
+    protected static ?string $navigationGroup = 'Master';
 
     public static function form(Form $form): Form
     {

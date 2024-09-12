@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Clusters\Master\Resources\PositionResource\Pages;
+namespace App\Filament\Resources\PositionResource\Pages;
 
-use App\Filament\Clusters\Master\Resources\PositionResource;
+use App\Filament\Resources\PositionResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Clusters\Master\Resources\DivisionResource\Pages;
+namespace App\Filament\Resources\DivisionResource\Pages;
 
-use App\Filament\Clusters\Master\Resources\DivisionResource;
+use App\Filament\Resources\DivisionResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
 
