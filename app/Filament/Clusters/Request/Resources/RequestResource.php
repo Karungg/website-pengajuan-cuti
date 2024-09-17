@@ -116,6 +116,7 @@ class RequestResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return auth()->user()->isEmployee() || auth()->user()->isResource() || auth()->user()->isResource();
+        $user = auth()->user();
+        return $user->isEmployee() || $user->isResource() || $user->isHeadOfDivision();
     }
 }
