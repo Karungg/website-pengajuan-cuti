@@ -45,7 +45,11 @@ class RequestResource extends Resource
                     ->required(),
                 Forms\Components\DatePicker::make('end_date')
                     ->label('Sampai Tanggal')
-                    ->required(),
+                    ->required()
+                    ->after('start_date')
+                    ->validationMessages([
+                        'after' => 'Tanggal Selesai tidak boleh sebelum dari Tanggal Mulai'
+                    ]),
                 Forms\Components\TimePicker::make('start_time')
                     ->label('Jam Mulai')
                     ->required(),
