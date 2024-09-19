@@ -9,6 +9,7 @@ use App\Models\Request as ModelRequest;
 use App\TypeRequest;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -30,7 +31,8 @@ class RequestResource extends Resource
                 Forms\Components\ToggleButtons::make('type')
                     ->label('Kategori Ajuan')
                     ->options(TypeRequest::class)
-                    ->inline(),
+                    ->inline()
+                    ->required(),
                 Forms\Components\DatePicker::make('start_date')
                     ->label('Dari Tanggal')
                     ->required(),
@@ -42,10 +44,29 @@ class RequestResource extends Resource
                     ->required(),
                 Forms\Components\TimePicker::make('end_time')
                     ->label('Jam Selesai')
-                    ->required(),
-                Forms\Components\TextInput::make('location')
                     ->required()
-                    ->maxLength(256),
+                    ->after('start_time'),
+                Forms\Components\ToggleButtons::make('condition')
+                    ->label('Lokasi')
+                    ->inline()
+                    ->options([
+                        true => 'Dalam Kota',
+                        false => 'Luar Kota'
+                    ])->colors([
+                        true => 'primary',
+                        false => 'danger'
+                    ])->icons([
+                        true => 'heroicon-m-home',
+                        false => 'heroicon-m-arrow-right-start-on-rectangle'
+                    ])
+                    ->required()
+                    ->live(),
+                Forms\Components\Textarea::make('location')
+                    ->label('Detail Lokasi')
+                    ->required()
+                    ->maxLength(256)
+                    ->columnSpanFull()
+                    ->visible(fn(Get $get): bool => !$get('condition')),
                 Forms\Components\Textarea::make('description')
                     ->label('Alasan')
                     ->required()

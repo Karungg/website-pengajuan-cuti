@@ -12,6 +12,9 @@ class CreateRequest extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
+        if ($data['condition']) {
+            $data['location'] = 'Dalam Kota';
+        }
         $data['user_id'] = auth()->id();
 
         return $data;
