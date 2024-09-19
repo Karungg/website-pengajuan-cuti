@@ -77,6 +77,11 @@ class RequestResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                if (!auth()->user()->isAdmin() && !auth()->user()->isDirector()) {
+                    $query->where('user_id', auth()->id());
+                }
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('ID')
@@ -135,9 +140,8 @@ class RequestResource extends Resource
         ];
     }
 
-    public static function canViewAny(): bool
+    public static function canCreate(): bool
     {
-        $user = auth()->user();
-        return $user->isEmployee() || $user->isResource() || $user->isHeadOfDivision();
+        return !auth()->user()->isAdmin() && !auth()->user()->isDirector();
     }
 }
