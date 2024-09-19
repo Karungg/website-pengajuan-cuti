@@ -10,6 +10,10 @@ class CreateRequest extends CreateRecord
 {
     protected static string $resource = RequestResource::class;
 
+    protected static ?string $title = 'Buat Pengajuan';
+
+    protected static ?string $breadcrumb = 'Buat Pengajuan';
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         if ($data['condition']) {

@@ -20,7 +20,11 @@ class RequestResource extends Resource
 {
     protected static ?string $model = ModelRequest::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-arrow-right-circle';
+
+    protected static ?string $navigationLabel = 'Pengajuan';
+
+    protected static ?string $pluralLabel = 'Pengajuan';
 
     protected static ?string $cluster = Request::class;
 
@@ -32,7 +36,10 @@ class RequestResource extends Resource
                     ->label('Kategori Ajuan')
                     ->options(TypeRequest::class)
                     ->inline()
-                    ->required(),
+                    ->required()
+                    ->validationMessages([
+                        'required' => 'Kategori Ajuan harus diisi.'
+                    ]),
                 Forms\Components\DatePicker::make('start_date')
                     ->label('Dari Tanggal')
                     ->required(),
@@ -45,7 +52,10 @@ class RequestResource extends Resource
                 Forms\Components\TimePicker::make('end_time')
                     ->label('Jam Selesai')
                     ->required()
-                    ->after('start_time'),
+                    ->after('start_time')
+                    ->validationMessages([
+                        'after' => 'Jam Selesai tidak boleh kurang dari Jam Mulai.'
+                    ]),
                 Forms\Components\ToggleButtons::make('condition')
                     ->label('Lokasi')
                     ->inline()
@@ -60,7 +70,11 @@ class RequestResource extends Resource
                         false => 'heroicon-m-arrow-right-start-on-rectangle'
                     ])
                     ->required()
-                    ->live(),
+                    ->live()
+                    ->hiddenOn('view')
+                    ->validationMessages([
+                        'required' => 'Lokasi harus diisi.'
+                    ]),
                 Forms\Components\Textarea::make('location')
                     ->label('Detail Lokasi')
                     ->required()
@@ -83,23 +97,34 @@ class RequestResource extends Resource
                 }
             })
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->label('ID')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('index')
+                    ->label('No')
+                    ->rowIndex(),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Nama')
+                    ->searchable()
+                    ->hidden(!auth()->user()->isAdmin() && !auth()->user()->isDirector()),
                 Tables\Columns\TextColumn::make('type')
-                    ->searchable(),
+                    ->label('Kategori Ajuan')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('start_date')
+                    ->label('Tanggal Mulai')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('end_date')
+                    ->label('Tanggal Selesai')
                     ->date()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('start_time'),
-                Tables\Columns\TextColumn::make('end_time'),
+                Tables\Columns\TextColumn::make('start_time')
+                    ->label('Jam Mulai')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('end_time')
+                    ->sortable()
+                    ->label('Jam Selesai'),
                 Tables\Columns\TextColumn::make('location')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('user.name')
-                    ->searchable(),
+                    ->label('Lokasi')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -113,7 +138,8 @@ class RequestResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->label('Detail'),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
