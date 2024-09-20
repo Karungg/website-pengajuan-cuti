@@ -10,6 +10,13 @@ class ListRequests extends ListRecords
 {
     protected static string $resource = RequestResource::class;
 
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            RequestResource\Widgets\StatsOverview::class
+        ];
+    }
+
     protected function getHeaderActions(): array
     {
         return [

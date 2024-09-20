@@ -11,16 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('requests', function (Blueprint $table) {
+        Schema::create('request_logs', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('type', 20);
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->time('start_time');
-            $table->time('end_time');
-            $table->string('location', 256);
-            $table->text('description');
-            $table->string('status', 5)->default('zero');
+            $table->string('status', 5);
+            $table->foreignUuid('request_id')->constrained();
             $table->foreignUuid('user_id')->constrained();
             $table->timestamps();
         });
@@ -31,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('requests');
+        Schema::dropIfExists('request_logs');
     }
 };

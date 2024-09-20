@@ -23,6 +23,7 @@ return new class extends Migration
             $table->date('date_of_birth');
             $table->string('phone', 14);
             $table->string('address', 256);
+            $table->smallInteger('leave_allowance')->default(0);
             $table->string('profile_picture', 256);
             $table->rememberToken();
             $table->timestamps();

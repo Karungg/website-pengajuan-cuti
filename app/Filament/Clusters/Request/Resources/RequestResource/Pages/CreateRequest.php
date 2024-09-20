@@ -16,9 +16,11 @@ class CreateRequest extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
+        // Check condition if in the city or out of city
         if ($data['condition']) {
             $data['location'] = 'Dalam Kota';
         }
+
         $data['user_id'] = auth()->id();
 
         return $data;

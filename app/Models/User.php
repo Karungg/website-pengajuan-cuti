@@ -36,6 +36,7 @@ class User extends Authenticatable implements FilamentUser
         'date_of_birth',
         'phone',
         'address',
+        'leave_allowance',
         'profile_picture',
         'position_id',
         'division_id',
@@ -103,6 +104,11 @@ class User extends Authenticatable implements FilamentUser
     public function isHeadOfDivision(): bool
     {
         return $this->hasRole('headOfDivision');
+    }
+
+    public function isAdminDirector(): bool
+    {
+        return $this->hasAnyRole(['admin', 'director']);
     }
 
     public function canAccessPanel(Panel $panel): bool

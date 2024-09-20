@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Filament\Clusters\Request\Resources;
+namespace App\Filament\Resources;
 
 use App\Enum\StatusRequest;
-use App\Filament\Clusters\Request;
-use App\Filament\Clusters\Request\Resources\RequestResource\Pages;
-use App\Filament\Clusters\Request\Resources\RequestResource\RelationManagers;
-use App\Models\Request as ModelRequest;
 use App\Enum\TypeRequest;
+use App\Filament\Resources\ApproveRequestResource\Pages;
+use App\Filament\Resources\ApproveRequestResource\RelationManagers;
+use App\Models\Request;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -18,22 +17,24 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class RequestResource extends Resource
+class ApproveRequestResource extends Resource
 {
-    protected static ?string $model = ModelRequest::class;
+    protected static ?string $model = Request::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-arrow-right-circle';
+    protected static ?string $label = 'Approval Pengajuan';
 
-    protected static ?string $navigationLabel = 'Pengajuan';
+    protected static ?string $navigationGroup = 'Transaksi Approval';
 
-    protected static ?string $pluralLabel = 'Pengajuan';
+    protected static ?int $navigationSort = 2;
 
-    protected static ?string $cluster = Request::class;
+    protected static ?string $navigationIcon = 'heroicon-o-check-circle';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('name')
+                    ->label('Nama'),
                 Forms\Components\ToggleButtons::make('type')
                     ->label('Kategori Ajuan')
                     ->options(TypeRequest::class)
@@ -110,8 +111,10 @@ class RequestResource extends Resource
     {
         return $table
             ->modifyQueryUsing(function (Builder $query) {
-                if (!auth()->user()->isAdminDirector()) {
-                    $query->where('user_id', auth()->id());
+                if (auth()->user()->isHeadOfDivision()) {
+                    $query->where('status', StatusRequest::Zero);
+                } elseif (auth()->user()->isResource()) {
+                    $query->where('status', StatusRequest::One);
                 }
             })
             ->columns([
@@ -119,12 +122,11 @@ class RequestResource extends Resource
                     ->label('No')
                     ->rowIndex(),
                 Tables\Columns\TextColumn::make('user.nip')
-                    ->hidden(!auth()->user()->isAdminDirector())
+                    ->hidden(auth()->user()->isEmployee())
                     ->label('NIP'),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('Nama')
-                    ->searchable()
-                    ->hidden(!auth()->user()->isAdminDirector()),
+                    ->hidden(auth()->user()->isEmployee())
+                    ->label('Name'),
                 Tables\Columns\TextColumn::make('type')
                     ->label('Kategori Ajuan')
                     ->badge()
@@ -184,20 +186,13 @@ class RequestResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListRequests::route('/'),
-            'create' => Pages\CreateRequest::route('/create'),
-            'view' => Pages\ViewRequest::route('/{record}'),
-            'edit' => Pages\EditRequest::route('/{record}/edit'),
+            'index' => Pages\ListApproveRequests::route('/'),
+            'view' => Pages\ViewApproveRequest::route('/{record}'),
         ];
     }
 
-    public static function canCreate(): bool
+    public static function canViewAny(): bool
     {
-        return !auth()->user()->isAdmin() && !auth()->user()->isDirector();
-    }
-
-    public static function canEdit(Model $record): bool
-    {
-        return $record->status == StatusRequest::Zero;
+        return !auth()->user()->isEmployee();
     }
 }

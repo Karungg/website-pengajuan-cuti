@@ -36,6 +36,7 @@ class UserFactory extends Factory
             'date_of_birth' => fake()->date(),
             'phone' => fake()->unique()->numerify('##############'),
             'address' => fake()->address(),
+            'leave_allowance' => 12,
             'profile_picture' => fake()->imageUrl(640, 480, 'people'),
         ];
     }
