@@ -21,13 +21,19 @@ class StatsOverview extends BaseWidget
         $inProcess = DB::table('requests')
             ->where('user_id', auth()->id())
             ->where('status', '!=', 'three')
+            ->where('status', '!=', 'four')
+            ->count();
+
+        $rejected = DB::table('requests')
+            ->where('user_id', auth()->id())
+            ->where('status', 'four')
             ->count();
 
         return [
             Stat::make('Sisa Cuti', $leaveAllowance),
             Stat::make('Jumlah Pengajuan', $totalRequest),
             Stat::make('Dalam Proses', $inProcess),
-            Stat::make('Ditolak', '0'),
+            Stat::make('Ditolak', $rejected),
         ];
     }
 }

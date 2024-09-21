@@ -8,6 +8,8 @@ use App\Filament\Clusters\Request\Resources\RequestResource\Pages;
 use App\Filament\Clusters\Request\Resources\RequestResource\RelationManagers;
 use App\Models\Request as ModelRequest;
 use App\Enum\TypeRequest;
+use App\Models\User;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -39,6 +41,20 @@ class RequestResource extends Resource
                     ->options(TypeRequest::class)
                     ->inline()
                     ->required()
+                    ->rules([
+                        fn(): Closure => function (string $attribute, $value, Closure $fail) {
+                            if ($value == 'leave') {
+                                $leaveAllowance = User::query()
+                                    ->where('id', auth()->id())
+                                    ->value('leave_allowance');
+
+                                if ($leaveAllowance <= 0) {
+                                    $fail('Jatah cuti anda sudah habis.');
+                                }
+                            }
+                        }
+                    ])
+                    ->live()
                     ->validationMessages([
                         'required' => 'Kategori Ajuan harus diisi.'
                     ]),
@@ -60,17 +76,21 @@ class RequestResource extends Resource
                 Forms\Components\DatePicker::make('end_date')
                     ->label('Sampai Tanggal')
                     ->required()
-                    ->after('start_date')
+                    ->afterOrEqual(fn(Get $get) => $get('start_date'))
                     ->validationMessages([
-                        'after' => 'Tanggal Selesai tidak boleh sebelum dari Tanggal Mulai'
+                        'after_or_equal' => 'Sampai Tanggal harus lebih dari atau sama dengan Tanggal Mulai'
                     ]),
                 Forms\Components\TimePicker::make('start_time')
                     ->label('Jam Mulai')
+                    ->default(fn(Get $get): ?string => $get('type') != 'permission' ? '09:00' : null)
+                    ->readOnly(fn(Get $get): bool => $get('type') != 'permission')
                     ->required(),
                 Forms\Components\TimePicker::make('end_time')
                     ->label('Jam Selesai')
                     ->required()
                     ->after('start_time')
+                    ->default(fn(Get $get): ?string => $get('type') != 'permission' ? '17:00' : null)
+                    ->readOnly(fn(Get $get): bool => $get('type') != 'permission')
                     ->validationMessages([
                         'after' => 'Jam Selesai tidak boleh kurang dari Jam Mulai.'
                     ]),

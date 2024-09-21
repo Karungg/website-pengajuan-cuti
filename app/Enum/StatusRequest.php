@@ -8,11 +8,11 @@ use Filament\Support\Contracts\HasLabel;
 
 enum StatusRequest: string implements HasLabel, HasColor, HasIcon
 {
-    case Zero = 'Zero';
-    case One = 'One';
-    case Two = 'Two';
-    case Three = 'Three';
-    case Four = 'Four';
+    case Zero = 'zero';
+    case One = 'one';
+    case Two = 'two';
+    case Three = 'three';
+    case Four = 'four';
 
     public function getLabel(): ?string
     {

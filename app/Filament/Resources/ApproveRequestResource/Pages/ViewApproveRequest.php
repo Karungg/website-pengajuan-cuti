@@ -29,6 +29,7 @@ class ViewApproveRequest extends ViewRecord
             Action::make('Approve')
                 ->requiresConfirmation()
                 ->icon('heroicon-m-hand-thumb-up')
+                ->hidden(fn() => $this->record->status == StatusRequest::Four)
                 ->action(function () {
                     if (auth()->user()->isHeadOfDivision()) {
                         return $this->record->update(['status' => StatusRequest::One]);
@@ -37,7 +38,13 @@ class ViewApproveRequest extends ViewRecord
                     } elseif (auth()->user()->isDirector()) {
                         return $this->record->update(['status' => StatusRequest::Three]);
                     }
-                })
+                }),
+            Action::make('Tolak')
+                ->requiresConfirmation()
+                ->icon('heroicon-m-x-circle')
+                ->color('danger')
+                ->hidden(fn() => $this->record->status == StatusRequest::Four)
+                ->action(fn() => $this->record->update(['status' => StatusRequest::Four])),
         ];
     }
 }
