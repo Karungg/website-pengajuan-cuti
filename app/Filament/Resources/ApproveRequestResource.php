@@ -33,6 +33,8 @@ class ApproveRequestResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('nip')
+                    ->label('NIP'),
                 Forms\Components\TextInput::make('name')
                     ->label('Nama'),
                 Forms\Components\ToggleButtons::make('type')
@@ -113,8 +115,10 @@ class ApproveRequestResource extends Resource
             ->modifyQueryUsing(function (Builder $query) {
                 if (auth()->user()->isHeadOfDivision()) {
                     $query->where('status', StatusRequest::Zero);
+                    $query->whereNot('user_id', auth()->id());
                 } elseif (auth()->user()->isResource()) {
                     $query->where('status', StatusRequest::One);
+                    $query->whereNot('user_id', auth()->id());
                 }
             })
             ->columns([

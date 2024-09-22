@@ -220,4 +220,9 @@ class RequestResource extends Resource
     {
         return $record->status == StatusRequest::Zero;
     }
+
+    public static function canViewAny(): bool
+    {
+        return !auth()->user()->isDirector();
+    }
 }

@@ -15,10 +15,13 @@ class ViewApproveRequest extends ViewRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        // Get name
-        $data['name'] = User::query()
+        // Get nip, name
+        $user = User::query()
             ->where('id', $data['user_id'])
-            ->value('name');
+            ->first(['nip', 'name']);
+
+        $data['nip'] = $user->nip;
+        $data['name'] = $user->name;
 
         return $data;
     }
@@ -29,21 +32,45 @@ class ViewApproveRequest extends ViewRecord
             Action::make('Approve')
                 ->requiresConfirmation()
                 ->icon('heroicon-m-hand-thumb-up')
-                ->hidden(fn() => $this->record->status == StatusRequest::Four)
+                ->hidden(function () {
+                    $user = auth()->user();
+
+                    if ($user->isHeadOfDivision() && in_array($this->record->status, [StatusRequest::One, StatusRequest::Four])) {
+                        return true;
+                    } elseif ($user->isResource() && in_array($this->record->status, [StatusRequest::Two, StatusRequest::Four])) {
+                        return true;
+                    } elseif ($user->isDirector() && in_array($this->record->status, [StatusRequest::Three, StatusRequest::Four])) {
+                        return true;
+                    };
+                })
                 ->action(function () {
-                    if (auth()->user()->isHeadOfDivision()) {
-                        return $this->record->update(['status' => StatusRequest::One]);
-                    } elseif (auth()->user()->isResource()) {
-                        return $this->record->update(['status' => StatusRequest::Two]);
-                    } elseif (auth()->user()->isDirector()) {
-                        return $this->record->update(['status' => StatusRequest::Three]);
+                    $user = auth()->user();
+
+                    if ($user->isHeadOfDivision()) {
+                        $status = StatusRequest::One;
+                    } elseif ($user->isResource()) {
+                        $status = StatusRequest::Two;
+                    } elseif ($user->isDirector()) {
+                        $status = StatusRequest::Three;
                     }
+
+                    return $this->record->update(['status' => $status]);
                 }),
             Action::make('Tolak')
                 ->requiresConfirmation()
                 ->icon('heroicon-m-x-circle')
                 ->color('danger')
-                ->hidden(fn() => $this->record->status == StatusRequest::Four)
+                ->hidden(function () {
+                    $user = auth()->user();
+
+                    if ($user->isHeadOfDivision() && in_array($this->record->status, [StatusRequest::One, StatusRequest::Four])) {
+                        return true;
+                    } elseif ($user->isResource() && in_array($this->record->status, [StatusRequest::Two, StatusRequest::Four])) {
+                        return true;
+                    } elseif ($user->isDirector() && in_array($this->record->status, [StatusRequest::Three, StatusRequest::Four])) {
+                        return true;
+                    };
+                })
                 ->action(fn() => $this->record->update(['status' => StatusRequest::Four])),
         ];
     }
