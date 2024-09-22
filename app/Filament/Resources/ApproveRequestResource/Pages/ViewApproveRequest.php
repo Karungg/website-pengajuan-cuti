@@ -39,7 +39,7 @@ class ViewApproveRequest extends ViewRecord
                         return true;
                     } elseif ($user->isResource() && in_array($this->record->status, [StatusRequest::Two, StatusRequest::Four])) {
                         return true;
-                    } elseif ($user->isDirector() && in_array($this->record->status, [StatusRequest::Three, StatusRequest::Four])) {
+                    } elseif ($user->isDirector() && in_array($this->record->status, [StatusRequest::Zero, StatusRequest::One, StatusRequest::Three, StatusRequest::Four])) {
                         return true;
                     };
                 })
@@ -67,7 +67,7 @@ class ViewApproveRequest extends ViewRecord
                         return true;
                     } elseif ($user->isResource() && in_array($this->record->status, [StatusRequest::Two, StatusRequest::Four])) {
                         return true;
-                    } elseif ($user->isDirector() && in_array($this->record->status, [StatusRequest::Three, StatusRequest::Four])) {
+                    } elseif ($user->isDirector() && in_array($this->record->status, [StatusRequest::Zero, StatusRequest::One, StatusRequest::Three, StatusRequest::Four])) {
                         return true;
                     };
                 })
