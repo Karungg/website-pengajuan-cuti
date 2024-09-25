@@ -17,8 +17,7 @@ class ViewApproveRequest extends ViewRecord
     {
         // Get nip, name
         $user = User::query()
-            ->where('id', $data['user_id'])
-            ->first(['nip', 'name']);
+            ->findOrFail($data['user_id'], ['nip', 'name']);
 
         $data['nip'] = $user->nip;
         $data['name'] = $user->name;
@@ -39,9 +38,11 @@ class ViewApproveRequest extends ViewRecord
                         return true;
                     } elseif ($user->isResource() && in_array($this->record->status, [StatusRequest::Two, StatusRequest::Four])) {
                         return true;
-                    } elseif ($user->isDirector() && in_array($this->record->status, [StatusRequest::Zero, StatusRequest::One, StatusRequest::Three, StatusRequest::Four])) {
+                    } elseif ($user->isDirector() && in_array($this->record->status, [StatusRequest::One, StatusRequest::Three, StatusRequest::Four])) {
                         return true;
-                    };
+                    } elseif ($user->isDirector() && $this->record->user->roles[0]->name == 'employee' && $this->record->status == StatusRequest::Zero) {
+                        return true;
+                    }
                 })
                 ->action(function () {
                     $user = auth()->user();
@@ -63,11 +64,14 @@ class ViewApproveRequest extends ViewRecord
                 ->hidden(function () {
                     $user = auth()->user();
 
+
                     if ($user->isHeadOfDivision() && in_array($this->record->status, [StatusRequest::One, StatusRequest::Four])) {
                         return true;
                     } elseif ($user->isResource() && in_array($this->record->status, [StatusRequest::Two, StatusRequest::Four])) {
                         return true;
-                    } elseif ($user->isDirector() && in_array($this->record->status, [StatusRequest::Zero, StatusRequest::One, StatusRequest::Three, StatusRequest::Four])) {
+                    } elseif ($user->isDirector() && in_array($this->record->status, [StatusRequest::One, StatusRequest::Three, StatusRequest::Four])) {
+                        return true;
+                    } elseif ($user->isDirector() && $this->record->user->roles[0]->name == 'employee' && $this->record->status == StatusRequest::Zero) {
                         return true;
                     };
                 })

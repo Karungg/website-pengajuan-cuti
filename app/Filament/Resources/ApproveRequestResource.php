@@ -7,6 +7,7 @@ use App\Enum\TypeRequest;
 use App\Filament\Resources\ApproveRequestResource\Pages;
 use App\Filament\Resources\ApproveRequestResource\RelationManagers;
 use App\Models\Request;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -113,12 +114,22 @@ class ApproveRequestResource extends Resource
     {
         return $table
             ->modifyQueryUsing(function (Builder $query) {
-                if (auth()->user()->isHeadOfDivision()) {
-                    $query->where('status', StatusRequest::Zero);
-                    $query->whereNot('user_id', auth()->id());
-                } elseif (auth()->user()->isResource()) {
-                    $query->where('status', StatusRequest::One);
-                    $query->whereNot('user_id', auth()->id());
+                $user = auth()->user();
+                $status = null;
+
+                if ($user->isHeadOfDivision()) {
+                    $status = StatusRequest::Zero;
+                    $role = 'employee';
+                } elseif ($user->isResource()) {
+                    $status = StatusRequest::One;
+                    $role = 'employee';
+                }
+
+                if ($status !== null) {
+                    $query->whereHas('user.roles', function (Builder $query) use ($role) {
+                        $query->where('roles.name', $role);
+                    })->where('status', $status)
+                        ->whereNot('user_id', auth()->id());
                 }
             })
             ->columns([

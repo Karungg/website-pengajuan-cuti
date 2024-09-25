@@ -82,7 +82,7 @@ class RequestResource extends Resource
                     ]),
                 Forms\Components\TimePicker::make('start_time')
                     ->label('Jam Mulai')
-                    ->default(fn(Get $get): ?string => $get('type') != 'permission' ? '09:00' : null)
+                    ->default(fn(Get $get): ?string => $get('type') != 'permission' ? '08:00' : null)
                     ->readOnly(fn(Get $get): bool => $get('type') != 'permission')
                     ->required(),
                 Forms\Components\TimePicker::make('end_time')
