@@ -28,54 +28,59 @@ class ViewApproveRequest extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('Approve')
-                ->requiresConfirmation()
-                ->icon('heroicon-m-hand-thumb-up')
-                ->hidden(function () {
-                    $user = auth()->user();
-
-                    if ($user->isHeadOfDivision() && in_array($this->record->status, [StatusRequest::One, StatusRequest::Four])) {
-                        return true;
-                    } elseif ($user->isResource() && in_array($this->record->status, [StatusRequest::Two, StatusRequest::Four])) {
-                        return true;
-                    } elseif ($user->isDirector() && in_array($this->record->status, [StatusRequest::One, StatusRequest::Three, StatusRequest::Four])) {
-                        return true;
-                    } elseif ($user->isDirector() && $this->record->user->roles[0]->name == 'employee' && $this->record->status == StatusRequest::Zero) {
-                        return true;
-                    }
-                })
-                ->action(function () {
-                    $user = auth()->user();
-
-                    if ($user->isHeadOfDivision()) {
-                        $status = StatusRequest::One;
-                    } elseif ($user->isResource()) {
-                        $status = StatusRequest::Two;
-                    } elseif ($user->isDirector()) {
-                        $status = StatusRequest::Three;
-                    }
-
-                    return $this->record->update(['status' => $status]);
-                }),
-            Action::make('Tolak')
-                ->requiresConfirmation()
-                ->icon('heroicon-m-x-circle')
-                ->color('danger')
-                ->hidden(function () {
-                    $user = auth()->user();
-
-
-                    if ($user->isHeadOfDivision() && in_array($this->record->status, [StatusRequest::One, StatusRequest::Four])) {
-                        return true;
-                    } elseif ($user->isResource() && in_array($this->record->status, [StatusRequest::Two, StatusRequest::Four])) {
-                        return true;
-                    } elseif ($user->isDirector() && in_array($this->record->status, [StatusRequest::One, StatusRequest::Three, StatusRequest::Four])) {
-                        return true;
-                    } elseif ($user->isDirector() && $this->record->user->roles[0]->name == 'employee' && $this->record->status == StatusRequest::Zero) {
-                        return true;
-                    };
-                })
-                ->action(fn() => $this->record->update(['status' => StatusRequest::Four])),
+            $this->buildApproveAction(),
+            $this->buildRejectAction()
         ];
+    }
+
+    protected function buildApproveAction(): Action
+    {
+        return Action::make('Approve')
+            ->requiresConfirmation()
+            ->icon('heroicon-m-hand-thumb-up')
+            ->hidden(fn() => $this->isApprovalHidden())
+            ->action(fn() => $this->approveAction());
+    }
+
+    protected function buildRejectAction(): Action
+    {
+        return Action::make('Tolak')
+            ->requiresConfirmation()
+            ->icon('heroicon-m-x-circle')
+            ->color('danger')
+            ->hidden(fn() => $this->isApprovalHidden())
+            ->action(fn() => $this->record->update(['status' => StatusRequest::Four]));
+    }
+
+    protected function isApprovalHidden(): bool
+    {
+        $user = auth()->user();
+        $status = $this->record->status;
+
+        if ($user->isHeadOfDivision() && in_array($status, [StatusRequest::One, StatusRequest::Four])) {
+            return true;
+        }
+        if ($user->isResource() && in_array($status, [StatusRequest::Two, StatusRequest::Four])) {
+            return true;
+        }
+        if ($user->isDirector() && (in_array($status, [StatusRequest::One, StatusRequest::Three, StatusRequest::Four]) ||
+            ($this->record->user->roles[0]->name === 'employee' && $status === StatusRequest::Zero))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function approveAction()
+    {
+        $user = auth()->user();
+
+        $status =  match (true) {
+            $user->isHeadOfDivision() => StatusRequest::One,
+            $user->isResource() => StatusRequest::Two,
+            $user->isDirector() => StatusRequest::Three
+        };
+
+        return $this->record->update(['status' => $status]);
     }
 }
