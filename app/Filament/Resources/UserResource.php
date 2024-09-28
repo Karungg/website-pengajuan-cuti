@@ -78,26 +78,25 @@ class UserResource extends Resource
                     ->label('No')
                     ->rowIndex(),
                 Tables\Columns\TextColumn::make('nik')
+                    ->label('NIK')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nip')
+                    ->label('NIP')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nama')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
+                    ->label('Email')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('place_of_birth')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('date_of_birth')
-                    ->date()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('phone')
+                    ->label('Nomor Telepon')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('address')
+                    ->label('Alamat')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('profile_picture')
+                Tables\Columns\ImageColumn::make('profile_picture')
+                    ->circular()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('position.title')
                     ->searchable(),

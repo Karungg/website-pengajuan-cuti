@@ -67,7 +67,6 @@ class ViewApproveRequest extends ViewRecord
             ($this->record->user->roles[0]->name === 'employee' && $status === StatusRequest::Zero))) {
             return true;
         }
-
         if ($user->isAdmin()) {
             return true;
         }
