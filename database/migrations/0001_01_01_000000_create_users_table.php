@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('place_of_birth', 50);
             $table->date('date_of_birth');
-            $table->string('phone', 14);
+            $table->string('phone', 17);
             $table->string('address', 256);
             $table->smallInteger('leave_allowance')->default(0);
             $table->string('profile_picture', 256);
