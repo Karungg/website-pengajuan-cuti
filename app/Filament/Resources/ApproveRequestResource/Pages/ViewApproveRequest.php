@@ -68,6 +68,10 @@ class ViewApproveRequest extends ViewRecord
             return true;
         }
 
+        if ($user->isAdmin()) {
+            return true;
+        }
+
         return false;
     }
 

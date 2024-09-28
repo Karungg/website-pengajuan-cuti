@@ -223,6 +223,6 @@ class RequestResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return !auth()->user()->isDirector();
+        return !auth()->user()->isAdminDirector();
     }
 }
