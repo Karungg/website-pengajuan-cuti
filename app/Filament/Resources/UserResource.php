@@ -121,6 +121,7 @@ class UserResource extends Resource
                         'max_length' => 'Maksimal karakter Alamat adalah 255'
                     ]),
                 Forms\Components\FileUpload::make('profile_picture')
+                    ->image()
                     ->label('Foto')
                     ->required()
                     ->directory('profile-pictures'),

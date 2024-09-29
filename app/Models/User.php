@@ -37,6 +37,11 @@ class User extends Authenticatable implements FilamentUser
         'phone',
         'address',
         'leave_allowance',
+        'date_of_entry',
+        'mutation_date',
+        'lod_start',
+        'lod_mutation',
+        'lod_stop',
         'profile_picture',
         'position_id',
         'division_id',
@@ -62,7 +67,8 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'date_of_birth' => 'date'
+            'date_of_birth' => 'date',
+            'mutation_date' => 'date'
         ];
     }
 
