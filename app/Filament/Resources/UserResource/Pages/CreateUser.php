@@ -10,6 +10,8 @@ class CreateUser extends CreateRecord
 {
     protected static string $resource = UserResource::class;
 
+    protected static ?string $title = 'Buat Pegawai Baru';
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['phone'] = '+62' . $data['phone'];

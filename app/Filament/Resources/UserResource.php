@@ -6,6 +6,8 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -30,128 +32,158 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nik')
-                    ->helperText('NIK harus berisi 16 digit angka.')
-                    ->label('NIK')
-                    ->required()
-                    ->minLength(16)
-                    ->maxLength(16)
-                    ->unique(User::class, 'nik', ignoreRecord: true)
-                    ->numeric()
-                    ->validationMessages([
-                        'required' => 'NIK harus diisi',
-                        'min_digits' => 'NIK harus berisi minimal 16 digit angka',
-                        'max_digits' => 'NIK tidak boleh lebih dari 16 digit angka',
-                        'unique' => 'NIK sudah digunakan. Silahkan gunakan NIK lain'
-                    ]),
-                Forms\Components\TextInput::make('nip')
-                    ->helperText('NIP harus berisi 6 digit angka.')
-                    ->label('NIP')
-                    ->required()
-                    ->minLength(6)
-                    ->maxLength(6)
-                    ->unique(User::class, 'nip', ignoreRecord: true)
-                    ->numeric()
-                    ->validationMessages([
-                        'required' => 'NIP harus diisi',
-                        'min_digits' => 'NIP harus berisi minimal 6 digit angka',
-                        'max_digits' => 'NIP tidak boleh lebih dari 6 digit angka',
-                        'unique' => 'NIP sudah digunakan. Silahkan gunakan NIP lain'
-                    ]),
-                Forms\Components\TextInput::make('name')
-                    ->label('Nama')
-                    ->required()
-                    ->maxLength(255)
-                    ->validationMessages([
-                        'required' => 'Nama harus diisi',
-                        'maxLength' => 'Maksimal karakter Nama adalah 255'
-                    ]),
-                Forms\Components\TextInput::make('email')
-                    ->label('Email')
-                    ->email()
-                    ->unique(User::class, 'email', ignoreRecord: true)
-                    ->required()
-                    ->maxLength(255)
-                    ->validationMessages([
-                        'required' => 'Nama harus diisi',
-                        'maxLength' => 'Maksimal karakter Nama adalah 255',
-                        'unique' => 'Email sudah digunakan. Silahkan gunakan Email lain'
-                    ]),
-                Forms\Components\TextInput::make('place_of_birth')
-                    ->label('Tempat Lahir')
-                    ->required()
-                    ->maxLength(50)
-                    ->validationMessages([
-                        'required' => 'Tempat Lahir harus diisi',
-                        'maxLength' => 'Maksimal karakter Tempat Lahir adalah 50'
-                    ]),
-                Forms\Components\DatePicker::make('date_of_birth')
-                    ->label('Tanggal Lahir')
-                    ->required()
-                    ->validationMessages([
-                        'required' => 'Tanggal Lahir harus diisi'
-                    ]),
-                Forms\Components\TextInput::make('phone')
-                    ->label('Nomor Telepon')
-                    ->numeric()
-                    ->tel()
-                    ->prefix('+62')
-                    ->required()
-                    ->maxLength(14)
-                    ->minLength(9)
-                    ->unique(User::class, 'phone', ignoreRecord: true)
-                    ->validationMessages([
-                        'required' => 'Nomor Telepon harus diisi',
-                        'max_digits' => 'Maksimal karakter Nomor Telepon adalah 14 digit angka',
-                        'min_digits' => 'Nomor Telepon harus berisi minimal 9 digit angka',
-                        'numeric' => 'Nomor Telepon harus berisi angka yang valid',
-                        'unique' => 'Nomor Telepon sudah digunakan. Silahkan gunakan Nomor Telepon lain'
-                    ])
-                    ->hidden('view'),
-                Forms\Components\TextInput::make('phone')
-                    ->label('Nomor Telepon')
-                    ->visible('view')
-                    ->prefix('+62'),
-                Forms\Components\Textarea::make('address')
-                    ->label('Alamat')
-                    ->required()
-                    ->maxLength(256)
-                    ->validationMessages([
-                        'required' => 'Alamat harus diisi',
-                        'max_length' => 'Maksimal karakter Alamat adalah 255'
-                    ]),
-                Forms\Components\FileUpload::make('profile_picture')
-                    ->image()
-                    ->label('Foto')
-                    ->required()
-                    ->directory('profile-pictures'),
-                Forms\Components\Select::make('position_id')
-                    ->label('Posisi')
-                    ->relationship('position', 'title')
-                    ->required()
-                    ->validationMessages([
-                        'required' => 'Posisi harus diisi'
-                    ]),
-                Forms\Components\Select::make('division_id')
-                    ->label('Divisi')
-                    ->relationship('division', 'title')
-                    ->required()
-                    ->validationMessages([
-                        'required' => 'Divisi harus diisi'
-                    ]),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required()
-                    ->minLength(8)
-                    ->maxLength(255)
-                    ->revealable()
-                    ->hiddenOn('view')
-                    ->validationMessages([
-                        'required' => 'Password harus diisi',
-                        'max_length' => 'Maksimal karakter Password adalah 255 karakter',
-                        'min_length' => 'Password harus berisi minimal 8 karakter'
-                    ]),
-            ]);
+                Section::make('Data Diri')
+                    ->schema([
+                        Forms\Components\TextInput::make('nik')
+                            ->helperText('NIK harus berisi 16 digit angka.')
+                            ->label('NIK')
+                            ->required()
+                            ->minLength(16)
+                            ->maxLength(16)
+                            ->unique(User::class, 'nik', ignoreRecord: true)
+                            ->numeric()
+                            ->validationMessages([
+                                'required' => 'NIK harus diisi',
+                                'min_digits' => 'NIK harus berisi minimal 16 digit angka',
+                                'max_digits' => 'NIK tidak boleh lebih dari 16 digit angka',
+                                'unique' => 'NIK sudah digunakan. Silahkan gunakan NIK lain'
+                            ]),
+                        Forms\Components\TextInput::make('nip')
+                            ->helperText('NIP harus berisi 6 digit angka.')
+                            ->label('NIP')
+                            ->required()
+                            ->minLength(6)
+                            ->maxLength(6)
+                            ->unique(User::class, 'nip', ignoreRecord: true)
+                            ->numeric()
+                            ->validationMessages([
+                                'required' => 'NIP harus diisi',
+                                'min_digits' => 'NIP harus berisi minimal 6 digit angka',
+                                'max_digits' => 'NIP tidak boleh lebih dari 6 digit angka',
+                                'unique' => 'NIP sudah digunakan. Silahkan gunakan NIP lain'
+                            ]),
+                        Forms\Components\TextInput::make('name')
+                            ->label('Nama')
+                            ->required()
+                            ->maxLength(255)
+                            ->validationMessages([
+                                'required' => 'Nama harus diisi',
+                                'maxLength' => 'Maksimal karakter Nama adalah 255'
+                            ]),
+                        Forms\Components\TextInput::make('place_of_birth')
+                            ->label('Tempat Lahir')
+                            ->required()
+                            ->maxLength(50)
+                            ->validationMessages([
+                                'required' => 'Tempat Lahir harus diisi',
+                                'maxLength' => 'Maksimal karakter Tempat Lahir adalah 50'
+                            ]),
+                        Forms\Components\DatePicker::make('date_of_birth')
+                            ->label('Tanggal Lahir')
+                            ->required()
+                            ->validationMessages([
+                                'required' => 'Tanggal Lahir harus diisi'
+                            ]),
+                        Forms\Components\TextInput::make('phone')
+                            ->label('Nomor Telepon')
+                            ->tel()
+                            ->numeric()
+                            ->prefix('+62')
+                            ->required()
+                            ->maxLength(14)
+                            ->minLength(9)
+                            ->unique(User::class, 'phone', ignoreRecord: true)
+                            ->validationMessages([
+                                'required' => 'Nomor Telepon harus diisi',
+                                'max_digits' => 'Maksimal karakter Nomor Telepon adalah 14 digit angka',
+                                'min_digits' => 'Nomor Telepon harus berisi minimal 9 digit angka',
+                                'numeric' => 'Nomor Telepon harus berisi angka yang valid',
+                                'unique' => 'Nomor Telepon sudah digunakan. Silahkan gunakan Nomor Telepon lain'
+                            ])->hiddenOn('view'),
+                        Forms\Components\TextInput::make('phone')
+                            ->label('Nomor Telepon')
+                            ->visibleOn('view')
+                            ->prefix('+62'),
+                        Forms\Components\Textarea::make('address')
+                            ->label('Alamat')
+                            ->required()
+                            ->maxLength(256)
+                            ->validationMessages([
+                                'required' => 'Alamat harus diisi',
+                                'max_length' => 'Maksimal karakter Alamat adalah 255'
+                            ]),
+                        Fieldset::make('Data Akun')
+                            ->schema([
+                                Forms\Components\TextInput::make('email')
+                                    ->label('Email')
+                                    ->email()
+                                    ->unique(User::class, 'email', ignoreRecord: true)
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->validationMessages([
+                                        'required' => 'Nama harus diisi',
+                                        'maxLength' => 'Maksimal karakter Nama adalah 255',
+                                        'unique' => 'Email sudah digunakan. Silahkan gunakan Email lain'
+                                    ]),
+                                Forms\Components\TextInput::make('password')
+                                    ->password()
+                                    ->required()
+                                    ->minLength(8)
+                                    ->maxLength(255)
+                                    ->revealable()
+                                    ->hiddenOn('view')
+                                    ->validationMessages([
+                                        'required' => 'Password harus diisi',
+                                        'max_length' => 'Maksimal karakter Password adalah 255 karakter',
+                                        'min_length' => 'Password harus berisi minimal 8 karakter'
+                                    ]),
+                                Forms\Components\Select::make('position_id')
+                                    ->label('Posisi')
+                                    ->relationship('position', 'title')
+                                    ->required()
+                                    ->validationMessages([
+                                        'required' => 'Posisi harus diisi'
+                                    ]),
+                                Forms\Components\Select::make('division_id')
+                                    ->label('Divisi')
+                                    ->relationship('division', 'title')
+                                    ->required()
+                                    ->validationMessages([
+                                        'required' => 'Divisi harus diisi'
+                                    ]),
+                            ])
+                    ])->columnSpan(8),
+                Section::make('Dokumen Pegawai')
+                    ->schema([
+                        Forms\Components\DatePicker::make('date_of_entry')
+                            ->label('Tanggal Masuk')
+                            ->required()
+                            ->validationMessages([
+                                'required' => 'Tanggal Masuk harus diisi'
+                            ]),
+                        Forms\Components\DatePicker::make('mutation_date')
+                            ->label('Tanggal Mutasi'),
+                        Forms\Components\FileUpload::make('profile_picture')
+                            ->image()
+                            ->label('Foto Diri')
+                            ->directory('profile-pictures'),
+                        Forms\Components\FileUpload::make('lod_start')
+                            ->acceptedFileTypes(['application/pdf'])
+                            ->label('Surat Keputusan Mulai')
+                            ->directory('lod-start')
+                            ->downloadable(),
+                        Forms\Components\FileUpload::make('lod_mutation')
+                            ->acceptedFileTypes(['application/pdf'])
+                            ->label('Surat Keputusan Mutasi')
+                            ->directory('lod-mutation')
+                            ->downloadable(),
+                        Forms\Components\FileUpload::make('lod_stop')
+                            ->acceptedFileTypes(['application/pdf'])
+                            ->label('Surat Keputusan Berhenti')
+                            ->directory('lod-stop')
+                            ->downloadable(),
+                    ])->columnSpan(4)
+            ])->columns(12);
     }
 
     public static function table(Table $table): Table

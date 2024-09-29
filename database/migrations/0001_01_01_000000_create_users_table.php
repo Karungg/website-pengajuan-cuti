@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('lod_start', 256)->nullable();
             $table->string('lod_mutation', 256)->nullable();
             $table->string('lod_stop', 256)->nullable();
-            $table->string('profile_picture', 256);
+            $table->string('profile_picture', 256)->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
