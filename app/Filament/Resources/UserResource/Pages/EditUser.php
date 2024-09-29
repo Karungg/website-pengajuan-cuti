@@ -11,6 +11,8 @@ class EditUser extends EditRecord
 {
     protected static string $resource = UserResource::class;
 
+    protected static ?string $title = 'Ubah Pegawai';
+
     protected function mutateFormDataBeforeFill(array $data): array
     {
         $data['phone'] = Str::substr($data['phone'], 3);

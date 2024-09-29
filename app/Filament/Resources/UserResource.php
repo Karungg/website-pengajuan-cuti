@@ -211,8 +211,10 @@ class UserResource extends Resource
                     ->label('Nomor Telepon')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('address')
+                    ->sortable()
                     ->label('Alamat')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\ImageColumn::make('profile_picture')
                     ->label('Foto')
                     ->circular()
@@ -225,6 +227,11 @@ class UserResource extends Resource
                     ->label('Divisi')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('date_of_entry')
+                    ->label('Tanggal Masuk')
+                    ->date()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
