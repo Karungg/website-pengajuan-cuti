@@ -9,10 +9,13 @@ use App\Filament\Resources\ApproveRequestResource\RelationManagers;
 use App\Models\Request;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -131,6 +134,7 @@ class ApproveRequestResource extends Resource
                     })->where('status', $status)
                         ->whereNot('user_id', auth()->id());
                 }
+                $query->orderBy('created_at', 'desc');
             })
             ->columns([
                 Tables\Columns\TextColumn::make('index')
@@ -168,16 +172,44 @@ class ApproveRequestResource extends Resource
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Dibuat Saat')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
+                    ->label('Diupdate Saat')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Filter::make('created_at')
+                    ->form([
+                        Select::make('user_id')
+                            ->label('Pilih Pegawai')
+                            ->options(User::pluck('name', 'id')->toArray())
+                            ->placeholder('Semua Pegawai')
+                            ->searchable(),
+                        DatePicker::make('created_from')
+                            ->label('Tanggal Mulai'),
+                        DatePicker::make('created_until')
+                            ->label('Tanggal Selesai'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date)
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date)
+                            )
+                            ->when(
+                                $data['user_id'],
+                                fn(Builder $query, $userId): Builder => $query->where('user_id', $userId)
+                            );
+                    })
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()

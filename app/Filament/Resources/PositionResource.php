@@ -32,9 +32,14 @@ class PositionResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('title')
                     ->required()
-                    ->maxLength(100),
+                    ->label('Nama Jabatan')
+                    ->maxLength(100)
+                    ->validationMessages([
+                        'required' => 'Nama Jabatan harus diisi'
+                    ]),
                 Forms\Components\TextInput::make('description')
-                    ->maxLength(256),
+                    ->maxLength(256)
+                    ->label('Deskripsi'),
             ]);
     }
 
@@ -46,15 +51,20 @@ class PositionResource extends Resource
                     ->label('No')
                     ->rowIndex(),
                 Tables\Columns\TextColumn::make('title')
-                    ->searchable(),
+                    ->searchable()
+                    ->label('Nama Jabatan')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('description')
-                    ->searchable(),
+                    ->searchable()
+                    ->label('Deskripsi'),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Dibuat Saat')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
+                    ->label('Diupdate Saat')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

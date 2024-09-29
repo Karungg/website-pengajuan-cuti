@@ -11,10 +11,13 @@ use App\Enum\TypeRequest;
 use App\Models\User;
 use Closure;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -133,6 +136,7 @@ class RequestResource extends Resource
                 if (!auth()->user()->isAdminDirector()) {
                     $query->where('user_id', auth()->id());
                 }
+                $query->orderBy('created_at', 'desc');
             })
             ->columns([
                 Tables\Columns\TextColumn::make('index')
@@ -180,7 +184,24 @@ class RequestResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('created_from')
+                            ->label('Tanggal Mulai'),
+                        DatePicker::make('created_until')
+                            ->label('Tanggal Selesai'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    })
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()

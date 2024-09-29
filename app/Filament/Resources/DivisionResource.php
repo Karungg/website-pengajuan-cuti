@@ -32,9 +32,14 @@ class DivisionResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('title')
                     ->required()
-                    ->maxLength(50),
+                    ->label('Nama Divisi')
+                    ->maxLength(50)
+                    ->validationMessages([
+                        'required' => 'Nama Divisi harus diisi'
+                    ]),
                 Forms\Components\TextInput::make('description')
-                    ->maxLength(256),
+                    ->maxLength(256)
+                    ->label('Deskripsi'),
             ]);
     }
 
@@ -46,15 +51,20 @@ class DivisionResource extends Resource
                     ->label('No')
                     ->rowIndex(),
                 Tables\Columns\TextColumn::make('title')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable()
+                    ->label('Nama Divisi'),
                 Tables\Columns\TextColumn::make('description')
-                    ->searchable(),
+                    ->searchable()
+                    ->label('Deskripsi'),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Dibuat Saat')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
+                    ->label('Diupdate Saat')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
