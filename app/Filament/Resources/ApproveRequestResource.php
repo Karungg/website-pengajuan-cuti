@@ -189,7 +189,12 @@ class ApproveRequestResource extends Resource
                     ->form([
                         Select::make('user_id')
                             ->label('Pilih Pegawai')
-                            ->options(User::pluck('name', 'id')->toArray())
+                            ->options(
+                                User::query()
+                                    ->role(['employee', 'resource', 'headOfDivision'])
+                                    ->pluck('name', 'id')
+                                    ->toArray()
+                            )
                             ->placeholder('Semua Pegawai')
                             ->searchable(),
                         DatePicker::make('created_from')
