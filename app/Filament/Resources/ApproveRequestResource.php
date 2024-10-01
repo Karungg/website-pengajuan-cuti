@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enum\StatusRequest;
 use App\Enum\TypeRequest;
+use App\Filament\Exports\RequestExporter;
 use App\Filament\Resources\ApproveRequestResource\Pages;
 use App\Filament\Resources\ApproveRequestResource\RelationManagers;
 use App\Models\Request;
@@ -15,6 +16,7 @@ use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ExportBulkAction;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -219,6 +221,8 @@ class ApproveRequestResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+                ExportBulkAction::make()
+                    ->exporter(RequestExporter::class)
             ]);
     }
 
