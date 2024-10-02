@@ -5,6 +5,7 @@ namespace App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class EditUser extends EditRecord
@@ -26,5 +27,20 @@ class EditUser extends EditRecord
             Actions\ViewAction::make(),
             Actions\DeleteAction::make(),
         ];
+    }
+
+    protected function afterSave()
+    {
+        $record = $this->record;
+        $positionTitle = DB::table('positions')
+            ->where('id', $record->position_id)
+            ->value('title');
+
+        return match ($positionTitle) {
+            'Direksi' => $record->syncRoles('director'),
+            'SDM' => $record->syncRoles('resource'),
+            'Kepala Bagian' => $record->syncRoles('headOfDivision'),
+            'Pegawai' => $record->syncRoles('employee'),
+        };
     }
 }
