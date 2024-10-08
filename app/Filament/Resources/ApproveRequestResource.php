@@ -50,7 +50,11 @@ class ApproveRequestResource extends Resource
                     ->required()
                     ->validationMessages([
                         'required' => 'Kategori Ajuan harus diisi.'
-                    ]),
+                    ])
+                    ->hint(function (?Model $record): string {
+                        $leave =  $record->user->leave_allowance;
+                        return "Sisa Cuti : $leave";
+                    }),
                 Forms\Components\ToggleButtons::make('status')
                     ->inline()
                     ->options(function (?Model $record) {

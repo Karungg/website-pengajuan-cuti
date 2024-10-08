@@ -99,11 +99,7 @@ class UserResource extends Resource
                                 'min_digits' => 'Nomor Telepon harus berisi minimal 9 digit angka',
                                 'numeric' => 'Nomor Telepon harus berisi angka yang valid',
                                 'unique' => 'Nomor Telepon sudah digunakan. Silahkan gunakan Nomor Telepon lain'
-                            ])->hiddenOn('view'),
-                        Forms\Components\TextInput::make('phone')
-                            ->label('Nomor Telepon')
-                            ->visibleOn('view')
-                            ->prefix('+62'),
+                            ]),
                         Forms\Components\Textarea::make('address')
                             ->label('Alamat')
                             ->required()

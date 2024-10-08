@@ -100,7 +100,7 @@ class RequestResource extends Resource
                             $differentDays = $startDate->diffInDays($endDate);
 
                             if ($differentDays >= $leaveAllowance) {
-                                $fail("Batas cuci anda adalah $leaveAllowance hari");
+                                $fail("Batas cuti anda adalah $leaveAllowance hari");
                             }
                         }
                     })
