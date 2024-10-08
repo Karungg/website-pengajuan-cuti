@@ -5,9 +5,11 @@ namespace App\Filament\Resources\ApproveRequestResource\Pages;
 use App\Enum\StatusRequest;
 use App\Filament\Resources\ApproveRequestResource;
 use App\Models\User;
+use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\ViewRecord;
+use Illuminate\Support\Facades\DB;
 
 class ViewApproveRequest extends ViewRecord
 {
@@ -49,7 +51,7 @@ class ViewApproveRequest extends ViewRecord
             ->icon('heroicon-m-x-circle')
             ->color('danger')
             ->hidden(fn() => $this->isApprovalHidden())
-            ->action(fn() => $this->record->update(['status' => StatusRequest::Four]));
+            ->action(fn() => $this->rejectAction());
     }
 
     protected function isApprovalHidden(): bool
@@ -85,5 +87,17 @@ class ViewApproveRequest extends ViewRecord
         };
 
         return $this->record->update(['status' => $status]);
+    }
+
+    protected function rejectAction()
+    {
+        // Get different days
+        $startDate = Carbon::parse($this->record->start_date);
+        $endDate = Carbon::parse($this->record->end_date);
+        $differentDays = $startDate->diffInDays($endDate);
+
+        DB::table('users')->where('id', auth()->id())->increment('leave_allowance', $differentDays);
+
+        return $this->record->update(['status' => StatusRequest::Four]);
     }
 }
