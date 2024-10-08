@@ -9,6 +9,7 @@ use App\Filament\Clusters\Request\Resources\RequestResource\RelationManagers;
 use App\Models\Request as ModelRequest;
 use App\Enum\TypeRequest;
 use App\Models\User;
+use Carbon\Carbon;
 use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -44,6 +45,13 @@ class RequestResource extends Resource
                     ->options(TypeRequest::class)
                     ->inline()
                     ->required()
+                    ->hint(function () {
+                        $leaveAllowance = User::query()
+                            ->where('id', auth()->id())
+                            ->value('leave_allowance');
+
+                        return "Cuti anda tersisa $leaveAllowance";
+                    })
                     ->rules([
                         fn(): Closure => function (string $attribute, $value, Closure $fail) {
                             if ($value == 'leave') {
@@ -80,6 +88,22 @@ class RequestResource extends Resource
                     ->label('Sampai Tanggal')
                     ->required()
                     ->afterOrEqual(fn(Get $get) => $get('start_date'))
+                    ->rules(fn(Get $get): Closure => function (string $attribute, $value, Closure $fail) use ($get) {
+                        if ($get('type') == 'leave') {
+
+                            $startDate = Carbon::parse($get('start_date'));
+                            $endDate = Carbon::parse($value);
+                            $leaveAllowance = User::query()
+                                ->where('id', auth()->id())
+                                ->value('leave_allowance');
+
+                            $differentDays = $startDate->diffInDays($endDate);
+
+                            if ($differentDays >= $leaveAllowance) {
+                                $fail("Batas cuci anda adalah $leaveAllowance hari");
+                            }
+                        }
+                    })
                     ->validationMessages([
                         'after_or_equal' => 'Sampai Tanggal harus lebih dari atau sama dengan Tanggal Mulai'
                     ]),

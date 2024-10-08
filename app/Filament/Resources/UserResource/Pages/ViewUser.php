@@ -19,11 +19,4 @@ class ViewUser extends ViewRecord
             Actions\EditAction::make(),
         ];
     }
-
-    protected function mutateFormDataBeforeFill(array $data): array
-    {
-        $data['phone'] = Str::substr($data['phone'], 3);
-
-        return $data;
-    }
 }
