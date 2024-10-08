@@ -20,7 +20,7 @@ class CreateRequest extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         // Get different days
-        $startDate = Carbon::parse($data['start_date']);
+        $startDate = Carbon::parse($data['start_date'])->addDay(-1);
         $endDate = Carbon::parse($data['end_date']);
         $differentDays = $startDate->diffInDays($endDate);
 

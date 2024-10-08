@@ -96,7 +96,7 @@ class ViewApproveRequest extends ViewRecord
         $endDate = Carbon::parse($this->record->end_date);
         $differentDays = $startDate->diffInDays($endDate);
 
-        DB::table('users')->where('id', auth()->id())->increment('leave_allowance', $differentDays);
+        DB::table('users')->where('id', $this->record->user_id)->increment('leave_allowance', $differentDays);
 
         return $this->record->update(['status' => StatusRequest::Four]);
     }
