@@ -92,7 +92,7 @@ class ViewApproveRequest extends ViewRecord
     protected function rejectAction()
     {
         // Get different days
-        $startDate = Carbon::parse($this->record->start_date);
+        $startDate = Carbon::parse($this->record->start_date)->addDays(-1);
         $endDate = Carbon::parse($this->record->end_date);
         $differentDays = $startDate->diffInDays($endDate);
 
