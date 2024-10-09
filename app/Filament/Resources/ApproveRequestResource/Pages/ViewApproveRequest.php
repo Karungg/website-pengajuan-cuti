@@ -51,7 +51,7 @@ class ViewApproveRequest extends ViewRecord
             ->icon('heroicon-m-x-circle')
             ->color('danger')
             ->hidden(fn() => $this->isApprovalHidden())
-            ->action(fn() => $this->rejectAction());
+            ->action(fn() => $this->record->update(['status' => StatusRequest::Four]));
     }
 
     protected function isApprovalHidden(): bool
@@ -96,17 +96,5 @@ class ViewApproveRequest extends ViewRecord
             // Decrement leaveAllowance
             DB::table('users')->where('id', $this->record->user_id)->decrement('leave_allowance', $differentDays);
         }
-    }
-
-    protected function rejectAction()
-    {
-        // Get different days
-        $startDate = Carbon::parse($this->record->start_date)->addDays(-1);
-        $endDate = Carbon::parse($this->record->end_date);
-        $differentDays = $startDate->diffInDays($endDate);
-
-        DB::table('users')->where('id', $this->record->user_id)->increment('leave_allowance', $differentDays);
-
-        return $this->record->update(['status' => StatusRequest::Four]);
     }
 }
