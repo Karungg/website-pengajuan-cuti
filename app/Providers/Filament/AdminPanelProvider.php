@@ -17,6 +17,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Illuminate\View\View;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -27,6 +28,10 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->brandName('SIPAWAI')
+            ->brandLogo(asset('assets/icons/icon-sipawai.svg'))
+            ->favicon(asset('assets/icons/favicon.svg'))
+            ->brandLogoHeight(fn() => auth()->check() ? '3rem' : '8rem')
             ->colors([
                 'primary' => Color::Amber,
             ])
