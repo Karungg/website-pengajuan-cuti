@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ApproveRequestResource\Pages;
 
 use App\Enum\StatusRequest;
+use App\Enum\TypeRequest;
 use App\Filament\Resources\ApproveRequestResource;
 use App\Models\User;
 use Carbon\Carbon;
@@ -88,7 +89,7 @@ class ViewApproveRequest extends ViewRecord
 
         $this->record->update(['status' => $status]);
 
-        if ($this->record->status == StatusRequest::Three && $user->isDirector()) {
+        if ($this->record->status == StatusRequest::Three && $user->isDirector() && $this->record->type == TypeRequest::Leave) {
             $startDate = Carbon::parse($this->record->start_date)->addDay(-1);
             $endDate = Carbon::parse($this->record->end_date);
             $differentDays = $startDate->diffInDays($endDate);
