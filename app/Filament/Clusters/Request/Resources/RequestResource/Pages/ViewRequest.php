@@ -2,6 +2,7 @@
 
 namespace App\Filament\Clusters\Request\Resources\RequestResource\Pages;
 
+use App\Enum\StatusRequest;
 use App\Filament\Clusters\Request\Resources\RequestResource;
 use Filament\Actions;
 use Filament\Actions\Action;
@@ -25,6 +26,7 @@ class ViewRequest extends ViewRecord
     {
         return Action::make('Unduh Dokumen')
             ->url(route('pdf', $this->record->id))
-            ->openUrlInNewTab();
+            ->openUrlInNewTab()
+            ->visible(fn() => $this->record->status == StatusRequest::Three);
     }
 }
