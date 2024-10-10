@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Position;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -31,25 +32,30 @@ class UserSeeder extends Seeder
         // Create director user
         User::factory()->director()->create([
             'name' => 'director',
-            'email' => 'director@gmail.com'
+            'email' => 'director@gmail.com',
+            'position_id' => Position::query()->where('title', 'Direksi')->value('id')
+
         ]);
 
         // Create employee user
         User::factory()->employee()->create([
             'name' => 'employee',
-            'email' => 'employee@gmail.com'
+            'email' => 'employee@gmail.com',
+            'position_id' => Position::query()->where('title', 'Pegawai')->value('id')
         ]);
 
         // Create resource user
         User::factory()->resource()->create([
             'name' => 'resource',
-            'email' => 'resource@gmail.com'
+            'email' => 'resource@gmail.com',
+            'position_id' => Position::query()->where('title', 'SDM')->value('id')
         ]);
 
         // Create head of division user
         User::factory()->headOfDivision()->create([
             'name' => 'headOfDivision',
-            'email' => 'headOfDivision@gmail.com'
+            'email' => 'headOfDivision@gmail.com',
+            'position_id' => Position::query()->where('title', 'Kepala Bagian')->value('id')
         ]);
     }
 }
