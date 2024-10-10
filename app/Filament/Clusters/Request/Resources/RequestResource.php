@@ -271,6 +271,7 @@ class RequestResource extends Resource
             'create' => Pages\CreateRequest::route('/create'),
             'view' => Pages\ViewRequest::route('/{record}'),
             'edit' => Pages\EditRequest::route('/{record}/edit'),
+            'timeline' => Pages\Timeline::route('/timeline/{record}')
         ];
     }
 

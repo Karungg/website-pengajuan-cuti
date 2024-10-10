@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('request_logs', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('status', 5);
+            $table->string('status', 50);
             $table->foreignUuid('request_id')->constrained();
             $table->foreignUuid('user_id')->constrained();
             $table->timestamps();

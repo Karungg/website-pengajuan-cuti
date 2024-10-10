@@ -17,6 +17,8 @@ class ViewRequest extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('Lihat Timeline')
+                ->url(route('filament.admin.request.resources.requests.timeline', ['record' => $this->record->id])),
             Actions\EditAction::make(),
             $this->downloadAction()
         ];

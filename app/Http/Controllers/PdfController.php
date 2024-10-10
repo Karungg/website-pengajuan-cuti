@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Request as ModelsRequest;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 class PdfController extends Controller
 {
