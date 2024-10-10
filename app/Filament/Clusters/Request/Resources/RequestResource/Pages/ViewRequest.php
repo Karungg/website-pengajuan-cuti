@@ -21,8 +21,10 @@ class ViewRequest extends ViewRecord
         ];
     }
 
-    protected function downloadAction(): Action
+    protected function downloadAction()
     {
-        return Action::make('Unduh Dokumen');
+        return Action::make('Unduh Dokumen')
+            ->url(route('pdf', $this->record->id))
+            ->openUrlInNewTab();
     }
 }

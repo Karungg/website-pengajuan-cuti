@@ -68,7 +68,8 @@ class User extends Authenticatable implements FilamentUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'date_of_birth' => 'date',
-            'mutation_date' => 'date'
+            'mutation_date' => 'date',
+            'date_of_entry' => 'date'
         ];
     }
 
