@@ -12,6 +12,7 @@ use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
@@ -201,6 +202,13 @@ class ApproveRequestResource extends Resource
                             )
                             ->placeholder('Semua Pegawai')
                             ->searchable(),
+                        ToggleButtons::make('type')
+                            ->label('Kategori Ajuan')
+                            ->options(TypeRequest::class)
+                            ->inline(),
+                        Select::make('status')
+                            ->label('Status')
+                            ->options(StatusRequest::class),
                         DatePicker::make('created_from')
                             ->label('Tanggal Mulai'),
                         DatePicker::make('created_until')
@@ -209,16 +217,24 @@ class ApproveRequestResource extends Resource
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
                             ->when(
+                                $data['user_id'],
+                                fn(Builder $query, $userId): Builder => $query->where('user_id', $userId)
+                            )
+                            ->when(
+                                $data['type'],
+                                fn(Builder $query, $type): Builder => $query->where('type', $type)
+                            )
+                            ->when(
+                                $data['status'],
+                                fn(Builder $query, $status): Builder => $query->where('status', $status)
+                            )
+                            ->when(
                                 $data['created_from'],
                                 fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date)
                             )
                             ->when(
                                 $data['created_until'],
                                 fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date)
-                            )
-                            ->when(
-                                $data['user_id'],
-                                fn(Builder $query, $userId): Builder => $query->where('user_id', $userId)
                             );
                     })
             ])

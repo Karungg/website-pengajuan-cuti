@@ -13,6 +13,8 @@ use Carbon\Carbon;
 use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
@@ -210,13 +212,29 @@ class RequestResource extends Resource
             ->filters([
                 Filter::make('created_at')
                     ->form([
+                        ToggleButtons::make('type')
+                            ->label('Kategori Ajuan')
+                            ->options(TypeRequest::class)
+                            ->inline(),
+                        Select::make('status')
+                            ->label('Status')
+                            ->options(StatusRequest::class),
                         DatePicker::make('created_from')
                             ->label('Tanggal Mulai'),
                         DatePicker::make('created_until')
                             ->label('Tanggal Selesai'),
+
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
+                            ->when(
+                                $data['type'],
+                                fn(Builder $query, $type): Builder => $query->where('type', $type)
+                            )
+                            ->when(
+                                $data['status'],
+                                fn(Builder $query, $status): Builder => $query->where('status', $status)
+                            )
                             ->when(
                                 $data['created_from'],
                                 fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
