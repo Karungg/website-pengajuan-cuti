@@ -11,6 +11,7 @@ use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ViewApproveRequest extends ViewRecord
 {
@@ -63,11 +64,14 @@ class ViewApproveRequest extends ViewRecord
         if ($user->isHeadOfDivision() && in_array($status, [StatusRequest::One, StatusRequest::Four])) {
             return true;
         }
-        if ($user->isResource() && in_array($status, [StatusRequest::Two, StatusRequest::Four])) {
+        if (
+            $user->isResource() && in_array($status, [StatusRequest::Two, StatusRequest::Four]) |
+            (in_array($this->record->user->roles[0]->name, ['headOfDivision', 'resource']))
+        ) {
             return true;
         }
         if ($user->isDirector() && (in_array($status, [StatusRequest::One, StatusRequest::Three, StatusRequest::Four]) ||
-            ($this->record->user->roles[0]->name === 'employee' && $status === StatusRequest::Zero))) {
+            ($this->record->user->roles[0]->name === 'employee'))) {
             return true;
         }
         if ($user->isAdmin()) {
@@ -97,5 +101,14 @@ class ViewApproveRequest extends ViewRecord
             // Decrement leaveAllowance
             DB::table('users')->where('id', $this->record->user_id)->decrement('leave_allowance', $differentDays);
         }
+
+        DB::table('request_details')
+            ->insert([
+                'id' => Str::uuid(),
+                'approve_by' => auth()->id(),
+                'request_id' => $this->record->id,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
     }
 }

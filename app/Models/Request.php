@@ -51,4 +51,9 @@ class Request extends Model
     {
         return $this->hasMany(RequestLog::class);
     }
+
+    public function requestDetails(): HasMany
+    {
+        return $this->hasMany(RequestDetail::class);
+    }
 }

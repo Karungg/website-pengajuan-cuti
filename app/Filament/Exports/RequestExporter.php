@@ -58,6 +58,9 @@ class RequestExporter extends Exporter
                 ->label('Dibuat Saat'),
             ExportColumn::make('updated_at')
                 ->label('Diupdate Saat'),
+            ExportColumn::make('leave_allowance')
+                ->formatStateUsing(fn(): string => 'Test')
+                ->label('Sisa Cuti')
         ];
     }
 

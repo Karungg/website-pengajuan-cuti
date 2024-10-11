@@ -130,9 +130,6 @@ class ApproveRequestResource extends Resource
                 if ($user->isHeadOfDivision()) {
                     $status = StatusRequest::Zero;
                     $role = 'employee';
-                } elseif ($user->isResource()) {
-                    $status = StatusRequest::One;
-                    $role = 'employee';
                 }
 
                 if ($status !== null) {

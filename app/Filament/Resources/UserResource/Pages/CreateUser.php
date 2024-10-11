@@ -34,6 +34,7 @@ class CreateUser extends CreateRecord
             'SDM' => $record->assignRole('resource'),
             'Kepala Bagian' => $record->assignRole('headOfDivision'),
             'Pegawai' => $record->assignRole('employee'),
+            'Kepala Kas' => $record->assignRole('employee')
         };
     }
 }

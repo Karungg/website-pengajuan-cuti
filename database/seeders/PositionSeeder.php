@@ -18,6 +18,7 @@ class PositionSeeder extends Seeder
             ['title' => 'SDM'],
             ['title' => 'Kepala Bagian'],
             ['title' => 'Pegawai'],
+            ['title' => 'Kepala Kas'],
         ];
 
         foreach ($positions as $position) {
