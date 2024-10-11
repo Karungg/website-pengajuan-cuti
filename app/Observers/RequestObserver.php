@@ -14,22 +14,8 @@ class RequestObserver
      */
     public function created(Request $request): void
     {
-        $user = auth()->user();
-
-        $status = match (true) {
-            $user->isEmployee() => 'Menunggu Disetujui Kepala Divisi',
-            $user->isHeadOfDivision() => 'Menunggu Disetujui Direktur',
-            $user->isResource() => 'Menunggu Disetujui Direktur',
-        };
-
-        DB::table('request_logs')->insert([
-            'id' => Str::uuid(),
-            'status' => $status,
-            'request_id' => $request->id,
-            'user_id' => auth()->id(),
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        $status = $this->getInitialStatus();
+        $this->logStatus($request->id, $status);
     }
 
     /**
@@ -37,20 +23,52 @@ class RequestObserver
      */
     public function updated(Request $request): void
     {
-        $status = match ($request->status) {
-            StatusRequest::One => 'Disetujui Kepala Divisi',
-            StatusRequest::Two => 'Disetujui SDM',
-            StatusRequest::Three => 'Disetujui Direksi',
-            StatusRequest::Four => 'Ditolak'
-        };
+        if ($request->status == StatusRequest::Zero) {
+            $this->logStatus($request->id, 'Melakukan Perubahan Data Pengajuan');
+        } else {
+            $status = match ($request->status) {
+                StatusRequest::One => 'Disetujui Kepala Divisi',
+                StatusRequest::Two => 'Disetujui SDM',
+                StatusRequest::Three => 'Disetujui Direksi',
+                StatusRequest::Four => 'Ditolak',
+            };
 
+            $this->logStatus($request->id, $status);
+
+            if ($status === 'Disetujui Kepala Divisi') {
+                $this->logStatus($request->id, 'Menunggu Disetujui SDM');
+            } elseif ($status === 'Disetujui SDM') {
+                $this->logStatus($request->id, 'Menunggu Disetujui Direksi');
+            }
+        }
+    }
+
+    /**
+     * Log the status of a request.
+     */
+    private function logStatus(string $requestId, string $status): void
+    {
         DB::table('request_logs')->insert([
             'id' => Str::uuid(),
             'status' => $status,
-            'request_id' => $request->id,
+            'request_id' => $requestId,
             'user_id' => auth()->id(),
             'created_at' => now(),
-            'updated_at' => now()
+            'updated_at' => now(),
         ]);
+    }
+
+    /**
+     * Get the initial status based on the user role.
+     */
+    private function getInitialStatus(): string
+    {
+        $user = auth()->user();
+
+        return match (true) {
+            $user->isEmployee() => 'Menunggu Disetujui Kepala Divisi',
+            $user->isHeadOfDivision() => 'Menunggu Disetujui Direktur',
+            $user->isResource() => 'Menunggu Disetujui Direktur',
+        };
     }
 }
