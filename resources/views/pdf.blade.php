@@ -95,7 +95,7 @@
         <div style="display: inline-block; width: 49%; text-align: right; vertical-align: top;">
             <p>Bogor, {{ $request->updated_at->format('d M Y') }}</p>
             <br><br>
-            <p>( Arif Sudjatmiko )</p>
+            <p>( {{ $request->user->name }} )</p>
         </div>
     </div>
 
@@ -108,10 +108,12 @@
         <div style="height: 60px;"></div>
     </div>
 
-    <div class="end">
-        <p>Mengetahui</p>
-        <p>( Gatot Sumargono )</p>
-    </div>
+    @if (!$request->user->roles('employee'))
+        <div class="end">
+            <p>Mengetahui</p>
+            <p>( Gatot Sumargono )</p>
+        </div>
+    @endif
 
     <div class="line"></div>
 
@@ -121,7 +123,6 @@
     </div>
 
     <div class="end">
-        <p>Bogor, 2024</p>
         <p>( SDM )</p>
     </div>
 </body>
