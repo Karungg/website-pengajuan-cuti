@@ -29,6 +29,6 @@ class ViewRequest extends ViewRecord
         return Action::make('Unduh Dokumen')
             ->url(route('pdf', $this->record->id))
             ->openUrlInNewTab()
-            ->visible(fn() => $this->record->status == StatusRequest::Three);
+            ->visible(fn() => $this->record->status == StatusRequest::Three || $this->record->user->roles[0]->name == 'employee' && $this->record->status == StatusRequest::Two);
     }
 }

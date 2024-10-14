@@ -36,9 +36,7 @@ class RequestObserver
             $this->logStatus($request->id, $status);
 
             if ($status === 'Disetujui Kepala Divisi') {
-                $this->logStatus($request->id, 'Menunggu Disetujui SDM');
-            } elseif ($status === 'Disetujui SDM') {
-                $this->logStatus($request->id, 'Menunggu Disetujui Direksi');
+                $this->logStatus($request->id, 'Menunggu Disetujui SDM', 1);
             }
         }
     }
@@ -46,14 +44,14 @@ class RequestObserver
     /**
      * Log the status of a request.
      */
-    private function logStatus(string $requestId, string $status): void
+    private function logStatus(string $requestId, string $status, ?int $seconds = null): void
     {
         DB::table('request_logs')->insert([
             'id' => Str::uuid(),
             'status' => $status,
             'request_id' => $requestId,
             'user_id' => auth()->id(),
-            'created_at' => now(),
+            'created_at' => $seconds ? now()->addSeconds(2) : now(),
             'updated_at' => now(),
         ]);
     }

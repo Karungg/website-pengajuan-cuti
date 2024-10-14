@@ -90,7 +90,7 @@
         <div style="display: inline-block; width: 49%; vertical-align: top;">
             <p>Menyetujui</p>
             <br><br>
-            <p>( Effi Budiherniwan Emor )</p>
+            <p>( {{ $request->user->hasRole('employee') ? $headOfDivisionName : 'Effi Budiherniwan Emor' }} )</p>
         </div>
         <div style="display: inline-block; width: 49%; text-align: right; vertical-align: top;">
             <p>Bogor, {{ $request->updated_at->format('d M Y') }}</p>

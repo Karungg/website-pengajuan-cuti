@@ -93,7 +93,7 @@ class ViewApproveRequest extends ViewRecord
 
         $this->record->update(['status' => $status]);
 
-        if ($this->record->status == StatusRequest::Three && $user->isDirector() && $this->record->type == TypeRequest::Leave) {
+        if (in_array($this->record->status, [StatusRequest::Three, StatusRequest::Zero]) && $user->isDirector() && $this->record->type == TypeRequest::Leave) {
             $startDate = Carbon::parse($this->record->start_date)->addDay(-1);
             $endDate = Carbon::parse($this->record->end_date);
             $differentDays = $startDate->diffInDays($endDate);
