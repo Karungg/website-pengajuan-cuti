@@ -91,6 +91,7 @@
             <p>Menyetujui</p>
             <br><br>
             <p>( {{ $request->user->hasRole('employee') ? $headOfDivisionName : 'Effi Budiherniwan Emor' }} )</p>
+            <img style="margin-bottom: 10px" src="{{ public_path('storage/qr/1.png') }}" alt="">
         </div>
         <div style="display: inline-block; width: 49%; text-align: right; vertical-align: top;">
             <p>Bogor, {{ $request->updated_at->format('d M Y') }}</p>
@@ -98,8 +99,6 @@
             <p>( {{ $request->user->name }} )</p>
         </div>
     </div>
-
-
 
     <div class="line"></div>
 
@@ -123,6 +122,7 @@
     </div>
 
     <div class="end">
+        <img src="{{ public_path('storage/qr/2.png') }}" alt="">
         <p>( SDM )</p>
     </div>
 </body>
