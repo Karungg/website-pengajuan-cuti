@@ -102,10 +102,10 @@
             <div class="content">
                 <p class="heading">Pengumuman</p>
                 <p class="para">
-                    Penanda Tangan : Kepala Divisi
+                    Penanda Tangan : SDM
                 </p>
                 <p class="para">
-                    Tanggal Surat : {{ now() }}
+                    Tanggal Surat : {{ $request->created_at->format('d M Y') }}
                 </p>
                 <p class="para">
                     Perihal : Formulir Cuti Tahunan
@@ -113,7 +113,8 @@
                 <p class="para">
                     PIC : SDM
                 </p>
-                <p class="para para-sm">Tanda Tangan Kepala Divisi</p>
+                <p class="para para-sm">Tanda Tangan SDM</p>
+                <img src="{{ asset('assets/icons/icon-sipawai.svg') }}" alt="">
             </div>
         </div>
     </div>

@@ -93,12 +93,13 @@ class ViewApproveRequest extends ViewRecord
 
         $this->record->update(['status' => $status]);
 
-        if (in_array($this->record->status, [StatusRequest::Three, StatusRequest::Zero]) && $user->isDirector() && $this->record->type == TypeRequest::Leave) {
-            $startDate = Carbon::parse($this->record->start_date)->addDay(-1);
-            $endDate = Carbon::parse($this->record->end_date);
-            $differentDays = $startDate->diffInDays($endDate);
+        $startDate = Carbon::parse($this->record->start_date)->addDay(-1);
+        $endDate = Carbon::parse($this->record->end_date);
+        $differentDays = $startDate->diffInDays($endDate);
 
-            // Decrement leaveAllowance
+        if (in_array($this->record->status, [StatusRequest::Three, StatusRequest::Zero]) && $user->isDirector() && $this->record->type == TypeRequest::Leave) {
+            DB::table('users')->where('id', $this->record->user_id)->decrement('leave_allowance', $differentDays);
+        } elseif ($this->record->status == StatusRequest::Two) {
             DB::table('users')->where('id', $this->record->user_id)->decrement('leave_allowance', $differentDays);
         }
 
