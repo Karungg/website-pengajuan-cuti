@@ -13,16 +13,20 @@ class AnnountcementController extends Controller
     public function index(string $id): View
     {
         $request = ModelsRequest::query()
-            ->findOrFail($id);
+            ->findOrFail($id, ['id']);
 
         $requestLog = DB::table('request_logs')
             ->where('request_id', $id)
             ->orderByDesc('created_at')
             ->limit(3)
-            ->get();
+            ->get([
+                'id',
+                'created_at',
+                'user_id'
+            ]);
 
         $approvedBy = User::query()
-            ->findOrFail($requestLog[0]->user_id);
+            ->findOrFail($requestLog[0]->user_id, ['name']);
 
         return view('annountcement', [
             'request' => $request,

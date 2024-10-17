@@ -14,29 +14,60 @@ class PdfController extends Controller
     public function index(string $id)
     {
         $request = ModelsRequest::query()
-            ->with(['user.position'])
+            ->with([
+                'user:id,nip,name,date_of_entry,leave_allowance,position_id',
+                'user.position:id,title'
+            ])
             ->where('id', $id)
-            ->firstOrFail();
+            ->firstOrFail([
+                'id',
+                'type',
+                'start_date',
+                'end_date',
+                'location',
+                'user_id',
+                'updated_at'
+            ]);
 
-        $headOfDivisionId = DB::table('request_details')
-            ->where('request_id', $id)
-            ->oldest('created_at')
-            ->first(['approve_by']);
-
-        $headOfDivisionName = DB::table('users')
-            ->where('id', $headOfDivisionId->approve_by)
-            ->value('name');
-
+        // Get leave amount
         $startDate = Carbon::parse($request->start_date)->addDays(-1);
         $endDate = Carbon::parse($request->end_date);
         $leaveAmount = $startDate->diffInDays($endDate);
 
+        // Get oldest request details
+        $oldest = $this->getRequestDetails($request->id, 'oldest');
+
+        // Get latest request details
+        $latest = $this->getRequestDetails($request->id, 'latest');
+
+        // Get headOfDivision name from oldest request details
+        $headOfDivisionName = $this->getApproveBy($oldest->approve_by);
+
+        // Get resourceOrDirector from latest request details
+        $resourceOrDirector = $this->getApproveBy($latest->approve_by);
+
         $pdf = Pdf::loadView('pdf', [
             'request' => $request,
             'leaveAmount' => $leaveAmount,
-            'headOfDivisionName' => $headOfDivisionName
+            'headOfDivisionName' => $headOfDivisionName,
+            'resourceOrDirector' => $resourceOrDirector
         ]);
 
         return $pdf->stream('formulir-cuti-tahunan-' . $request->user->name . '.pdf');
+    }
+
+    private function getRequestDetails(string $requestId, string $order)
+    {
+        return DB::table('request_details')
+            ->where('request_id', $requestId)
+            ->{$order}()
+            ->first(['approve_by']);
+    }
+
+    private function getApproveBy(string $id)
+    {
+        return DB::table('users')
+            ->where('id', $id)
+            ->value('name');
     }
 }

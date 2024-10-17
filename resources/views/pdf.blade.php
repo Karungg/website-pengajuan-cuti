@@ -66,6 +66,19 @@
                 <td>: {{ $request->user->date_of_entry->format('d M Y') }}</td>
             </tr>
             <tr>
+                <td>Kategori Ajuan</td>
+                <td>:
+                    @if ($request->type == \App\Enum\TypeRequest::Leave)
+                        Cuti
+                    @elseif($request->type == \App\Enum\TypeRequest::Sick)
+                        Sakit
+                    @else
+                        Izin
+                    @endif
+                </td>
+
+            </tr>
+            <tr>
                 <td>Sisa Cuti</td>
                 <td>: {{ $request->user->leave_allowance }} Hari</td>
             </tr>
@@ -91,7 +104,7 @@
             <p>Menyetujui</p>
             <img src="data:image/png;base64, {{ base64_encode(QrCode::size(100)->generate(route('annountcement', $request->id))) }}"
                 alt="QR Code">
-            <p>( {{ $request->user->hasRole('employee') ? $headOfDivisionName : 'Effi Budiherniwan Emor' }} )</p>
+            <p>( {{ $request->user->hasRole('employee') ? $headOfDivisionName : $resourceOrDirector }} )</p>
         </div>
         <div style="display: inline-block; width: 49%; text-align: right; vertical-align: top;">
             <p>Bogor, {{ $request->updated_at->format('d M Y') }}</p>

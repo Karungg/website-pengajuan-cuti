@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Pengumuman</title>
     <style>
         * {
             margin: 0;
@@ -118,12 +118,13 @@
                     <p class="para para-sm">Tanda Tangan {{ $approvedBy->name }}</p>
                     <img src="{{ asset('assets/icons/favicon.svg') }}" alt="">
 
-                    @php
-                        $headOfDivision = \App\Models\User::query()->findOrFail($requestLog[2]->user_id);
-                    @endphp
-
-                    <p class="para para-sm">Tanda Tangan {{ $headOfDivision->name }}</p>
-                    <img src="{{ asset('assets/icons/favicon.svg') }}" alt="">
+                    @hasanyrole(['employee', 'headOfDivision'])
+                        @php
+                            $headOfDivision = \App\Models\User::query()->findOrFail($requestLog[2]->user_id, ['name']);
+                        @endphp
+                        <p class="para para-sm">Tanda Tangan {{ $headOfDivision->name }}</p>
+                        <img src="{{ asset('assets/icons/favicon.svg') }}" alt="">
+                    @endhasanyrole
                 @endif
 
             </div>

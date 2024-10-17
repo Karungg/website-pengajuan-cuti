@@ -61,19 +61,67 @@ class ViewApproveRequest extends ViewRecord
         $user = auth()->user();
         $status = $this->record->status;
 
-        if ($user->isHeadOfDivision() && in_array($status, [StatusRequest::One, StatusRequest::Four])) {
-            return true;
-        }
+        // If statement isHeadOfDivision
         if (
-            $user->isResource() && in_array($status, [StatusRequest::Two, StatusRequest::Four]) |
-            ($this->record->user->roles[0]->name === 'resource')
+            $user->isHeadOfDivision() && // AND
+            in_array($status, [
+                StatusRequest::One,
+                StatusRequest::Two,
+                StatusRequest::Four
+            ])
         ) {
             return true;
         }
-        if ($user->isDirector() && (in_array($status, [StatusRequest::One, StatusRequest::Three, StatusRequest::Four]) ||
-            ($this->record->user->roles[0]->name === 'employee'))) {
+
+        // If statement isResource() and check hasRole resource
+        if (
+            $user->isResource() && // AND
+            (in_array($status, [
+                StatusRequest::Two,
+                StatusRequest::Four
+            ]) || // OR
+                $this->record->user->hasRole('resource'))
+
+        ) {
             return true;
         }
+
+        // If statement isResource() and check hasRole employee
+        if (
+            $user->isResource() && // AND
+            ($this->record->user->hasRole('employee') && // AND
+                $this->record->status == StatusRequest::Zero)
+
+        ) {
+            return true;
+        }
+
+        // If statement isDirector() and check hasRole employee
+        if (
+            $user->isDirector() && // AND
+            (in_array(
+                $status,
+                [
+                    StatusRequest::One,
+                    StatusRequest::Three,
+                    StatusRequest::Four
+                ]
+            ) || // OR
+                ($this->record->user->hasRole('employee')))
+        ) {
+            return true;
+        }
+
+        // If statement isDirector() and check hasRole headOfDivision
+        if (
+            $user->isDirector() && // AND
+            ($this->record->status == StatusRequest::Zero && // AND
+                ($this->record->user->hasRole('headOfDivision')))
+        ) {
+            return true;
+        }
+
+        // If statement isAdmin()
         if ($user->isAdmin()) {
             return true;
         }
@@ -91,18 +139,36 @@ class ViewApproveRequest extends ViewRecord
             $user->isDirector() => StatusRequest::Three
         };
 
+        // Update status
         $this->record->update(['status' => $status]);
 
+        // Get differentDays
         $startDate = Carbon::parse($this->record->start_date)->addDay(-1);
         $endDate = Carbon::parse($this->record->end_date);
         $differentDays = $startDate->diffInDays($endDate);
 
-        if (in_array($this->record->status, [StatusRequest::Three, StatusRequest::Zero]) && $user->isDirector() && $this->record->type == TypeRequest::Leave) {
-            DB::table('users')->where('id', $this->record->user_id)->decrement('leave_allowance', $differentDays);
-        } elseif ($this->record->status == StatusRequest::Two && $this->record->type == TypeRequest::Leave && $this->record->user->hasRole('employee')) {
-            DB::table('users')->where('id', $this->record->user_id)->decrement('leave_allowance', $differentDays);
+        // Decrement leave allowance logic for headOfDivision, resource
+        if (
+            $this->record->status == StatusRequest::Three && // AND
+            $this->record->type == TypeRequest::Leave
+        ) {
+            DB::table('users')
+                ->where('id', $this->record->user_id)
+                ->decrement('leave_allowance', $differentDays);
         }
 
+        // Decrement leave allowance logic for employee
+        if (
+            $this->record->status == StatusRequest::Two && // AND
+            $this->record->type == TypeRequest::Leave && // AND
+            $this->record->user->hasRole('employee')
+        ) {
+            DB::table('users')
+                ->where('id', $this->record->user_id)
+                ->decrement('leave_allowance', $differentDays);
+        }
+
+        // Insert request details/log
         DB::table('request_details')
             ->insert([
                 'id' => Str::uuid(),

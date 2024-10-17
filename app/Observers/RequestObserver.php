@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Enum\StatusRequest;
 use App\Models\Request;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -23,13 +24,16 @@ class RequestObserver
      */
     public function updated(Request $request): void
     {
+        $user = User::query()
+            ->findOrFail($request->user_id, ['id']);
+
         if ($request->status == StatusRequest::Zero) {
             $this->logStatus($request->id, 'Melakukan Perubahan Data Pengajuan');
         } else {
             $status = match ($request->status) {
                 StatusRequest::One => 'Disetujui Kepala Divisi',
                 StatusRequest::Two => 'Disetujui SDM',
-                StatusRequest::Three => 'Disetujui Direksi',
+                StatusRequest::Three => 'Disetujui Direktur',
                 StatusRequest::Four => 'Ditolak',
             };
 
@@ -37,6 +41,8 @@ class RequestObserver
 
             if ($status === 'Disetujui Kepala Divisi') {
                 $this->logStatus($request->id, 'Menunggu Disetujui SDM', 1);
+            } elseif ($status === 'Disetujui SDM' && $user->isHeadOfDivision()) {
+                $this->logStatus($request->id, 'Menunggu Disetujui Direktur', 1);
             }
         }
     }
