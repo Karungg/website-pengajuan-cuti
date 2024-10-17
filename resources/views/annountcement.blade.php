@@ -102,19 +102,30 @@
             <div class="content">
                 <p class="heading">Pengumuman</p>
                 <p class="para">
-                    Penanda Tangan : SDM
+                    Penanda Tangan : {{ $approvedBy->name }}
                 </p>
                 <p class="para">
-                    Tanggal Surat : {{ $request->created_at->format('d M Y') }}
+                    Tanggal Surat : {{ $requestLog[0]->created_at }}
                 </p>
                 <p class="para">
                     Perihal : Formulir Cuti Tahunan
                 </p>
-                <p class="para">
-                    PIC : SDM
-                </p>
-                <p class="para para-sm">Tanda Tangan SDM</p>
-                <img src="{{ asset('assets/icons/icon-sipawai.svg') }}" alt="">
+
+                @if ($approvedBy->hasRole('director'))
+                    <p class="para para-sm">Tanda Tangan {{ $approvedBy->name }}</p>
+                    <img src="{{ asset('assets/icons/favicon.svg') }}" alt="">
+                @else
+                    <p class="para para-sm">Tanda Tangan {{ $approvedBy->name }}</p>
+                    <img src="{{ asset('assets/icons/favicon.svg') }}" alt="">
+
+                    @php
+                        $headOfDivision = \App\Models\User::query()->findOrFail($requestLog[2]->user_id);
+                    @endphp
+
+                    <p class="para para-sm">Tanda Tangan {{ $headOfDivision->name }}</p>
+                    <img src="{{ asset('assets/icons/favicon.svg') }}" alt="">
+                @endif
+
             </div>
         </div>
     </div>

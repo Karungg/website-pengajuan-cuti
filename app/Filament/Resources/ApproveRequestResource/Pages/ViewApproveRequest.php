@@ -66,7 +66,7 @@ class ViewApproveRequest extends ViewRecord
         }
         if (
             $user->isResource() && in_array($status, [StatusRequest::Two, StatusRequest::Four]) |
-            (in_array($this->record->user->roles[0]->name, ['headOfDivision', 'resource']))
+            ($this->record->user->roles[0]->name === 'resource')
         ) {
             return true;
         }
@@ -99,7 +99,7 @@ class ViewApproveRequest extends ViewRecord
 
         if (in_array($this->record->status, [StatusRequest::Three, StatusRequest::Zero]) && $user->isDirector() && $this->record->type == TypeRequest::Leave) {
             DB::table('users')->where('id', $this->record->user_id)->decrement('leave_allowance', $differentDays);
-        } elseif ($this->record->status == StatusRequest::Two && $this->record->type == TypeRequest::Leave) {
+        } elseif ($this->record->status == StatusRequest::Two && $this->record->type == TypeRequest::Leave && $this->record->user->hasRole('employee')) {
             DB::table('users')->where('id', $this->record->user_id)->decrement('leave_allowance', $differentDays);
         }
 
