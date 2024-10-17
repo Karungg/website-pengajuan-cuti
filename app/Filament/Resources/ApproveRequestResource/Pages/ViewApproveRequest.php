@@ -99,7 +99,7 @@ class ViewApproveRequest extends ViewRecord
 
         if (in_array($this->record->status, [StatusRequest::Three, StatusRequest::Zero]) && $user->isDirector() && $this->record->type == TypeRequest::Leave) {
             DB::table('users')->where('id', $this->record->user_id)->decrement('leave_allowance', $differentDays);
-        } elseif ($this->record->status == StatusRequest::Two) {
+        } elseif ($this->record->status == StatusRequest::Two && $this->record->type == TypeRequest::Leave) {
             DB::table('users')->where('id', $this->record->user_id)->decrement('leave_allowance', $differentDays);
         }
 
