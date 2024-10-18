@@ -113,17 +113,20 @@
 
                 @if ($approvedBy->hasRole('director'))
                     <p class="para para-sm">Tanda Tangan {{ $approvedBy->name }}</p>
-                    <img src="{{ asset('assets/icons/favicon.svg') }}" alt="">
+                    <img style="width: 100px" src="{{ asset('storage/' . $approvedBy->signature) }}" alt="">
                 @else
                     <p class="para para-sm">Tanda Tangan {{ $approvedBy->name }}</p>
-                    <img src="{{ asset('assets/icons/favicon.svg') }}" alt="">
+                    <img style="width: 100px" src="{{ asset('storage/' . $approvedBy->signature) }}" alt="">
 
                     @hasanyrole(['employee', 'headOfDivision'])
                         @php
-                            $headOfDivision = \App\Models\User::query()->findOrFail($requestLog[2]->user_id, ['name']);
+                            $headOfDivision = \App\Models\User::query()->findOrFail($requestLog[2]->user_id, [
+                                'name',
+                                'signature',
+                            ]);
                         @endphp
                         <p class="para para-sm">Tanda Tangan {{ $headOfDivision->name }}</p>
-                        <img src="{{ asset('assets/icons/favicon.svg') }}" alt="">
+                        <img style="width: 100px" src="{{ asset('storage/' . $headOfDivision->signature) }}" alt="">
                     @endhasanyrole
                 @endif
 

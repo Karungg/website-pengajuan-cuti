@@ -26,7 +26,7 @@ class AnnountcementController extends Controller
             ]);
 
         $approvedBy = User::query()
-            ->findOrFail($requestLog[0]->user_id, ['name']);
+            ->findOrFail($requestLog[0]->user_id, ['name', 'signature']);
 
         return view('annountcement', [
             'request' => $request,

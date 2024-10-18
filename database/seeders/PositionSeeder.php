@@ -14,7 +14,8 @@ class PositionSeeder extends Seeder
     public function run(): void
     {
         $positions = [
-            ['title' => 'Direksi'],
+            ['title' => 'Direktur Utama'],
+            ['title' => 'Direktur'],
             ['title' => 'SDM'],
             ['title' => 'Kepala Bagian'],
             ['title' => 'Pegawai'],

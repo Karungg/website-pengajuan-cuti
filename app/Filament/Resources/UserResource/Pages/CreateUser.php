@@ -30,11 +30,12 @@ class CreateUser extends CreateRecord
             ->value('title');
 
         return match ($positionTitle) {
-            'Direksi' => $record->assignRole('director'),
+            'Direktur Utama' => $record->assignRole('director'),
+            'Direktur' => $record->assignRole('admin'),
             'SDM' => $record->assignRole('resource'),
             'Kepala Bagian' => $record->assignRole('headOfDivision'),
             'Pegawai' => $record->assignRole('employee'),
-            'Kepala Kas' => $record->assignRole('employee')
+            'Kepala Kas' => $record->assignRole('headOfDivision'),
         };
     }
 }

@@ -143,10 +143,7 @@ class UserResource extends Resource
                                 Forms\Components\Select::make('division_id')
                                     ->label('Divisi')
                                     ->relationship('division', 'title')
-                                    ->required()
-                                    ->validationMessages([
-                                        'required' => 'Divisi harus diisi'
-                                    ]),
+                                    ->nullable(),
                             ])
                     ])->columnSpan(8),
                 Section::make('Dokumen Pegawai')
@@ -163,6 +160,10 @@ class UserResource extends Resource
                             ->image()
                             ->label('Foto Diri')
                             ->directory('profile-pictures'),
+                        Forms\Components\FileUpload::make('signature')
+                            ->image()
+                            ->label('Tanda Tangan')
+                            ->directory('signature'),
                         Forms\Components\FileUpload::make('lod_start')
                             ->acceptedFileTypes(['application/pdf'])
                             ->label('Surat Keputusan Mulai')

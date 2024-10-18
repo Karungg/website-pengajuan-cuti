@@ -43,6 +43,7 @@ class User extends Authenticatable implements FilamentUser
         'lod_mutation',
         'lod_stop',
         'profile_picture',
+        'signature',
         'position_id',
         'division_id',
     ];

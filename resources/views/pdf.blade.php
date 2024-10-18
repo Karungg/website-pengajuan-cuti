@@ -134,11 +134,13 @@
         <div style="height: 60px;"></div>
     </div>
 
-    <div class="end">
-        <img src="data:image/png;base64, {{ base64_encode(QrCode::size(100)->generate(route('annountcement', $request->id))) }}"
-            alt="QR Code">
-        <p>( SDM )</p>
-    </div>
+    @hasanyrole(['employee', 'headOfDivision'])
+        <div class="end">
+            <img src="data:image/png;base64, {{ base64_encode(QrCode::size(100)->generate(route('annountcement', $request->id))) }}"
+                alt="QR Code">
+            <p>( SDM )</p>
+        </div>
+    @endhasanyrole
 </body>
 
 </html>

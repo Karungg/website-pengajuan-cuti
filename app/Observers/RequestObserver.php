@@ -33,7 +33,7 @@ class RequestObserver
             $status = match ($request->status) {
                 StatusRequest::One => 'Disetujui Kepala Divisi',
                 StatusRequest::Two => 'Disetujui SDM',
-                StatusRequest::Three => 'Disetujui Direktur',
+                StatusRequest::Three => 'Disetujui Direktur Utama',
                 StatusRequest::Four => 'Ditolak',
             };
 
@@ -42,7 +42,7 @@ class RequestObserver
             if ($status === 'Disetujui Kepala Divisi') {
                 $this->logStatus($request->id, 'Menunggu Disetujui SDM', 1);
             } elseif ($status === 'Disetujui SDM' && $user->isHeadOfDivision()) {
-                $this->logStatus($request->id, 'Menunggu Disetujui Direktur', 1);
+                $this->logStatus($request->id, 'Menunggu Disetujui Direktur Utama', 1);
             }
         }
     }
@@ -72,7 +72,7 @@ class RequestObserver
         return match (true) {
             $user->isEmployee() => 'Menunggu Disetujui Kepala Divisi',
             $user->isHeadOfDivision() => 'Menunggu Disetujui SDM',
-            $user->isResource() => 'Menunggu Disetujui Direktur',
+            $user->isResource() => 'Menunggu Disetujui Direktur Utama',
         };
     }
 }

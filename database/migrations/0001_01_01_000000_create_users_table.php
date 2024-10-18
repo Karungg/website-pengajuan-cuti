@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('lod_mutation', 256)->nullable();
             $table->string('lod_stop', 256)->nullable();
             $table->string('profile_picture', 256)->nullable();
+            $table->string('signature', 256)->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
