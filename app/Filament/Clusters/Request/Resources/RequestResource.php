@@ -5,7 +5,6 @@ namespace App\Filament\Clusters\Request\Resources;
 use App\Enum\StatusRequest;
 use App\Filament\Clusters\Request;
 use App\Filament\Clusters\Request\Resources\RequestResource\Pages;
-use App\Filament\Clusters\Request\Resources\RequestResource\RelationManagers;
 use App\Models\Request as ModelRequest;
 use App\Enum\TypeRequest;
 use App\Models\User;
@@ -20,11 +19,9 @@ use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Filters\Filter;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class RequestResource extends Resource
 {
@@ -272,7 +269,7 @@ class RequestResource extends Resource
 
     public static function canCreate(): bool
     {
-        return !auth()->user()->isAdmin() && !auth()->user()->isDirector();
+        return !auth()->user()->isAdminDirector();
     }
 
     public static function canEdit(Model $record): bool

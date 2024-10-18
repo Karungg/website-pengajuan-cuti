@@ -3,7 +3,6 @@
 namespace App\Filament\Clusters\Request\Resources\RequestResource\Pages;
 
 use App\Filament\Clusters\Request\Resources\RequestResource;
-use App\Models\Request;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +24,7 @@ class Timeline extends Page
         $this->logs = DB::table('request_logs')
             ->where('request_id', $this->record->id)
             ->orderBy('created_at', 'asc')
-            ->get()
+            ->get(['status', 'created_at'])
             ->toArray();
     }
 }

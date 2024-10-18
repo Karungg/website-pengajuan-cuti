@@ -18,7 +18,9 @@ class ViewRequest extends ViewRecord
     {
         return [
             Action::make('Lihat Timeline')
-                ->url(route('filament.admin.request.resources.requests.timeline', ['record' => $this->record->id])),
+                ->url(route('filament.admin.request.resources.requests.timeline', [
+                    'record' => $this->record->id
+                ])),
             Actions\EditAction::make(),
             $this->downloadAction()
         ];
@@ -29,6 +31,10 @@ class ViewRequest extends ViewRecord
         return Action::make('Unduh Dokumen')
             ->url(route('pdf', $this->record->id))
             ->openUrlInNewTab()
-            ->visible(fn() => $this->record->status == StatusRequest::Three || $this->record->user->roles[0]->name == 'employee' && $this->record->status == StatusRequest::Two);
+            ->visible(
+                fn() => $this->record->status == StatusRequest::Three || // OR
+                    ($this->record->user->hasRole('employee') && // AND
+                        $this->record->status == StatusRequest::Two)
+            );
     }
 }

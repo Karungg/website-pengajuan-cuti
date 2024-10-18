@@ -6,7 +6,6 @@ use App\Filament\Resources\UserResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class EditUser extends EditRecord
 {

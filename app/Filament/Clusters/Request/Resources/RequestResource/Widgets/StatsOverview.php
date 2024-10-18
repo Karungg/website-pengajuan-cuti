@@ -10,22 +10,23 @@ class StatsOverview extends BaseWidget
 {
     protected function getStats(): array
     {
+        $user = auth()->id();
+
         $leaveAllowance = DB::table('users')
-            ->where('id', auth()->id())
+            ->where('id', $user)
             ->value('leave_allowance');
 
         $totalRequest = DB::table('requests')
-            ->where('user_id', auth()->id())
+            ->where('user_id', $user)
             ->count();
 
         $inProcess = DB::table('requests')
-            ->where('user_id', auth()->id())
-            ->where('status', '!=', 'three')
-            ->where('status', '!=', 'four')
+            ->where('user_id', $user)
+            ->whereNotIn('status', ['three', 'four'])
             ->count();
 
         $rejected = DB::table('requests')
-            ->where('user_id', auth()->id())
+            ->where('user_id', $user)
             ->where('status', 'four')
             ->count();
 

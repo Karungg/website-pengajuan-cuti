@@ -6,7 +6,6 @@ use App\Enum\StatusRequest;
 use App\Enum\TypeRequest;
 use App\Filament\Exports\RequestExporter;
 use App\Filament\Resources\ApproveRequestResource\Pages;
-use App\Filament\Resources\ApproveRequestResource\RelationManagers;
 use App\Models\Request;
 use App\Models\User;
 use Filament\Forms;
@@ -22,7 +21,6 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ApproveRequestResource extends Resource
 {
