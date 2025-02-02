@@ -22,7 +22,9 @@ class DivisionSeeder extends Seeder
         ];
 
         foreach ($divisions as $division) {
-            Division::create($division);
+            Division::withoutEvents(function () use ($division) {
+                Division::create($division);
+            });
         }
     }
 }
