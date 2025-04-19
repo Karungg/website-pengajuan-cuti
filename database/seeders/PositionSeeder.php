@@ -22,8 +22,10 @@ class PositionSeeder extends Seeder
             ['title' => 'Kepala Kas'],
         ];
 
-        foreach ($positions as $position) {
-            Position::create($position);
-        }
+        Position::withoutEvents(function () use ($positions) {
+            foreach ($positions as $position) {
+                Position::create($position);
+            }
+        });
     }
 }
