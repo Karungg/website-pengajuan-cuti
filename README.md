@@ -49,7 +49,12 @@ DB_USERNAME=
 DB_PASSWORD=
 ```
 
-5. **Jalankan migrasi dan seeder**
+5. **Buat key aplikasi**
+```
+php artisan key:generate
+```
+
+6. **Jalankan migrasi dan seeder**
 
 ```
 php artisan migrate
