@@ -68,7 +68,7 @@ php artisan serve
 php artisan queue:work
 ```
 
-Buka aplikasi di browser <a href="http://localhost:8000">http://localhost/</a>
+Buka aplikasi di browser <a href="http://localhost:8000">http://localhost:8000</a>
 
 👨‍💻 Developer
 Created with ❤️ by <a href="https://github.com/Karungg">Karungg</a>
